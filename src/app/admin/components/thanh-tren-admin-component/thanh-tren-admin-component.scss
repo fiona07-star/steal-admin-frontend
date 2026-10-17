@@ -36,4 +36,17 @@
       font-size: 1.8rem;
     }
   }
+  .dropdown-menu-custom {
+    width: 140px;
+    z-index: 1050;
+    border: 1px solid #1e1b4b !important;
+
+    .dropdown-item-custom {
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #fee2e2;
+      }
 }
+  }}

@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, inject, Inject, PLATFORM_ID } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, ElementRef, HostListener, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -10,21 +10,35 @@ import { RouterLink } from '@angular/router';
   templateUrl: './thanh-tren-admin-component.html',
 })
 export class ThanhTrenAdminComponent {
-  private platformId = inject(PLATFORM_ID);
-
   logoUrl: string = '';
-  brandName: string = 'STEAL';
   hasLogoError: boolean = false;
+  brandName: string = 'STEAL';
+  isUserMenuOpen: boolean = false;
 
-  ngOnInit(): void {
-    // Chỉ đọc localStorage phía Browser để tránh lỗi crash trên SSR (Node.js)
-    if (isPlatformBrowser(this.platformId)) {
-      this.logoUrl = localStorage.getItem('steal_admin_logo') || '';
-      this.brandName = localStorage.getItem('steal_admin_brand') || 'STEAL';
-    }
-  }
+  constructor(
+    private router: Router,
+    private elementRef: ElementRef
+  ) {}
 
   onLogoError(): void {
     this.hasLogoError = true;
+  }
+
+  toggleUserMenu(): void {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
+  // Tự động đóng dropdown khi click ra ngoài
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    const dropdownElement = this.elementRef.nativeElement.querySelector('#admin-user-dropdown');
+    if (this.isUserMenuOpen && dropdownElement && !dropdownElement.contains(event.target as Node)) {
+      this.isUserMenuOpen = false;
+    }
+}
+dangXuat(): void {
+    this.isUserMenuOpen = false;
+    localStorage.removeItem('admin_token');
+    this.router.navigate(['/admin/login']);
   }
 }

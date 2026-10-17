@@ -1,5 +1,5 @@
 <header class="topbar d-flex align-items-center justify-content-between px-4 py-2">
-  <!-- Logo & Tên Thương Hiệu bên trái (Có thể thay đổi động) -->
+  <!-- Logo & Tên Thương Hiệu bên trái -->
   <a routerLink="/admin" class="d-flex align-items-center text-decoration-none gap-2">
     @if (logoUrl && !hasLogoError) {
       <img 
@@ -18,15 +18,33 @@
     <span class="brand-text fw-bold fs-4">{{ brandName || 'STEAL' }}</span>
   </a>
 
-  <!-- Chuông & Nút Admin bên phải (Giữ cố định như thiết kế ban đầu) -->
+  <!-- Chuông & Nút Admin bên phải -->
   <div class="d-flex align-items-center gap-3">
     <button class="btn p-0 border-0 text-dark me-1" title="Thông báo">
       <i class="bi bi-bell-fill fs-4"></i>
     </button>
     
-    <div class="admin-badge d-flex align-items-center gap-2 px-2 py-0 bg-white rounded cursor-pointer">
-      <span class="fw-semibold text-dark">Admin</span>
-      <i class="bi bi-person-circle fs-4 text-dark"></i>
+    <!-- Nút Admin bọc trong container có dropdown -->
+    <div class="position-relative" id="admin-user-dropdown">
+      <div 
+        class="admin-badge d-flex align-items-center gap-2 px-2 py-0 bg-white rounded cursor-pointer"
+        (click)="toggleUserMenu()">
+        <span class="fw-semibold text-dark">Admin</span>
+        <i class="bi bi-person-circle fs-4 text-dark"></i>
+      </div>
+
+      <!-- Dropdown chỉ hiện duy nhất nút Đăng xuất -->
+      @if (isUserMenuOpen) {
+        <div class="dropdown-menu-custom position-absolute end-0 mt-2 py-1 bg-white rounded shadow border">
+          <button 
+            type="button" 
+            class="dropdown-item-custom d-flex align-items-center justify-content-center gap-2 px-3 py-2 border-0 bg-transparent text-danger w-100 small fw-semibold" 
+            (click)="dangXuat()">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Đăng xuất</span>
+          </button>
+        </div>
+      }
     </div>
   </div>
 </header>
