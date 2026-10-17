@@ -1,1 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #131525;
+  color: #c6d4df;
+  font-family: 'Motiva Sans', Arial, Helvetica, sans-serif;
+}

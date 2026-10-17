@@ -1,0 +1,14 @@
+<div class="admin-wrapper d-flex flex-column">
+  <!-- Thanh trên Topbar -->
+  <app-thanh-tren-admin-component></app-thanh-tren-admin-component>
+
+  <div class="d-flex flex-grow-1">
+    <!-- Thanh bên Sidebar -->
+    <app-thanh-ben-admin-component></app-thanh-ben-admin-component>
+
+    <!-- Nội dung hiển thị từng trang -->
+    <main class="content-body flex-grow-1 p-4">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

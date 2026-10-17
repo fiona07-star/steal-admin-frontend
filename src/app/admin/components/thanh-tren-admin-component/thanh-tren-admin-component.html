@@ -1,0 +1,32 @@
+<header class="topbar d-flex align-items-center justify-content-between px-4 py-2">
+  <!-- Logo & Tên Thương Hiệu bên trái (Có thể thay đổi động) -->
+  <a routerLink="/admin" class="d-flex align-items-center text-decoration-none gap-2">
+    @if (logoUrl && !hasLogoError) {
+      <img 
+        [src]="logoUrl" 
+        (error)="onLogoError()" 
+        alt="Logo" 
+        class="logo-img" 
+      />
+    } @else {
+      <div class="logo-circle d-flex align-items-center justify-content-center">
+        <i class="bi bi-controller text-white fs-6"></i>
+      </div>
+    }
+
+    <!-- Tên Thương Hiệu -->
+    <span class="brand-text fw-bold fs-4">{{ brandName || 'STEAL' }}</span>
+  </a>
+
+  <!-- Chuông & Nút Admin bên phải (Giữ cố định như thiết kế ban đầu) -->
+  <div class="d-flex align-items-center gap-3">
+    <button class="btn p-0 border-0 text-dark me-1" title="Thông báo">
+      <i class="bi bi-bell-fill fs-4"></i>
+    </button>
+    
+    <div class="admin-badge d-flex align-items-center gap-2 px-2 py-0 bg-white rounded cursor-pointer">
+      <span class="fw-semibold text-dark">Admin</span>
+      <i class="bi bi-person-circle fs-4 text-dark"></i>
+    </div>
+  </div>
+</header>

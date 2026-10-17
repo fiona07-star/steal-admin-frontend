@@ -1,0 +1,106 @@
+<aside class="sidebar d-flex flex-column p-3">
+  <ul class="nav nav-pills flex-column mb-auto gap-1">
+    
+    <!-- 1. Tổng quan (Khớp với route /admin/dashboard) -->
+    <li class="nav-item">
+      <a 
+        routerLink="/admin/dashboard" 
+        routerLinkActive="active" 
+        class="nav-link text-white d-flex align-items-center gap-3 px-3 py-2 rounded">
+        <i class="bi bi-sliders fs-5"></i>
+        <span>Tổng quan</span>
+      </a>
+    </li>
+
+    <!-- 2. Đơn hàng -->
+    <li class="nav-item">
+      <a 
+        routerLink="/admin/orders" 
+        routerLinkActive="active" 
+        class="nav-link text-white d-flex align-items-center gap-3 px-3 py-2 rounded">
+        <i class="bi bi-cart3 fs-5"></i>
+        <span>Đơn hàng</span>
+      </a>
+    </li>
+
+    <!-- 3. Sản phẩm (Thêm id="product-menu-item") -->
+    <li class="nav-item" id="product-menu-item">
+    <div 
+        class="nav-link text-white d-flex align-items-center justify-content-between px-3 py-2 rounded cursor-pointer"
+        [class.active]="isProductRouteActive"
+        (click)="toggleProductMenu()">
+        <div class="d-flex align-items-center gap-3">
+        <i class="bi bi-box-seam fs-5"></i>
+        <span>Sản phẩm</span>
+        </div>
+        <i class="bi bi-chevron-down arrow-icon" [class.rotated]="isProductMenuOpen"></i>
+    </div>
+
+    <!-- Submenu 3 trang con -->
+    @if (isProductMenuOpen) {
+        <ul class="submenu list-unstyled ps-5 pe-2 py-1 my-1">
+        <li>
+            <a routerLink="/admin/games" routerLinkActive="active-sub" class="submenu-link d-block py-1 px-2 rounded text-decoration-none">
+            Tất cả sản phẩm
+            </a>
+        </li>
+        <li>
+            <a routerLink="/admin/categories" routerLinkActive="active-sub" class="submenu-link d-block py-1 px-2 rounded text-decoration-none">
+            Nhóm sản phẩm
+            </a>
+        </li>
+        <li>
+            <a routerLink="/admin/promotions" routerLinkActive="active-sub" class="submenu-link d-block py-1 px-2 rounded text-decoration-none">
+            Khuyến mãi
+            </a>
+        </li>
+        </ul>
+    }
+    </li>
+   
+    <!-- 4. Khách hàng -->
+    <li class="nav-item">
+      <a 
+        routerLink="/admin/users" 
+        routerLinkActive="active" 
+        class="nav-link text-white d-flex align-items-center gap-3 px-3 py-2 rounded">
+        <i class="bi bi-people fs-5"></i>
+        <span>Khách hàng</span>
+      </a>
+    </li>
+
+    <!-- 5. Đánh giá -->
+    <li class="nav-item">
+      <a 
+        routerLink="/admin/reviews" 
+        routerLinkActive="active" 
+        class="nav-link text-white d-flex align-items-center gap-3 px-3 py-2 rounded">
+        <i class="bi bi-chat-left-text fs-5"></i>
+        <span>Đánh giá</span>
+      </a>
+    </li>
+
+    <!-- 6. Báo cáo -->
+    <li class="nav-item">
+      <a 
+        routerLink="/admin/analytics" 
+        routerLinkActive="active" 
+        class="nav-link text-white d-flex align-items-center gap-3 px-3 py-2 rounded">
+        <i class="bi bi-graph-up-arrow fs-5"></i>
+        <span>Báo cáo</span>
+      </a>
+    </li>
+
+    <!-- 7. Cấu hình -->
+    <li class="nav-item">
+      <a 
+        routerLink="/admin/settings" 
+        routerLinkActive="active" 
+        class="nav-link text-white d-flex align-items-center gap-3 px-3 py-2 rounded">
+        <i class="bi bi-gear fs-5"></i>
+        <span>Cấu hình</span>
+      </a>
+    </li>
+
+  </ul>
+</aside>
