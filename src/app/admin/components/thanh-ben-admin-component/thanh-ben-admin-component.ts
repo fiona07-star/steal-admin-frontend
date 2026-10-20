@@ -6,7 +6,7 @@ import { filter } from 'rxjs/internal/operators/filter';
   standalone: true,
   selector: 'app-thanh-ben-admin-component',
   imports: [RouterLink, RouterLinkActive],
-  styleUrl: './thanh-ben-admin-component.scss',
+  styleUrl: './thanh-ben-admin-component.css',
   templateUrl: './thanh-ben-admin-component.html',
 })
 export class ThanhBenAdminComponent {

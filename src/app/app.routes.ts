@@ -8,7 +8,7 @@ import { QuanLyNguoiDungComponent } from './admin/pages/quan-ly-nguoi-dung-compo
 import { ChiTietNguoiDungComponent } from './admin/pages/quan-ly-nguoi-dung-component/chi-tiet-nguoi-dung-component/chi-tiet-nguoi-dung-component';
 import { QuanLyDanhGiaComponent } from './admin/pages/quan-ly-danh-gia-component/quan-ly-danh-gia-component';
 import { CaiDatHeThongComponent} from './admin/pages/cai-dat-he-thong-component/cai-dat-he-thong-component';
-import { quanTriGuardGuard } from './guards/quan-tri-guard';
+import { quanTriGuard } from './guards/quan-tri-guard';
 import { QuanLyTroChoiComponent } from './admin/pages/san-pham/quan-ly-tro-choi-component/quan-ly-tro-choi-component';
 import{QuanLyDanhMucComponent} from './admin/pages/san-pham/quan-ly-danh-muc-component/quan-ly-danh-muc-component';
 import { ChiTietDanhMucComponent } from './admin/pages/san-pham/quan-ly-danh-muc-component/chi-tiet-danh-muc-component/chi-tiet-danh-muc-component';
@@ -19,32 +19,98 @@ import{ChiTietKhuyenMaiComponent} from './admin/pages/san-pham/quan-ly-khuyen-ma
 import { TongQuanAdminComponent } from './admin/pages/tong-quan-admin-component/tong-quan-admin-component';
 import { QuanLyDonHangComponent } from './admin/pages/quan-ly-don-hang-component/quan-ly-don-hang-component';
 import { ChiTietDonHangComponent } from './admin/pages/quan-ly-don-hang-component/chi-tiet-don-hang-component/chi-tiet-don-hang-component';
+import { DangNhapAdminComponent } from './admin/pages/dang-nhap-admin-component/dang-nhap-admin-component';
 
 export const routes: Routes = [
-  // MẶC ĐỊNH MỞ TRANG ADMIN
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+  // Trang mặc định
+  {
+    path: '',
+    redirectTo: 'admin/login',
+    pathMatch: 'full'
+  },
 
-  // KHU VỰC ADMIN LAYOUT
+  // Trang đăng nhập: không đặt Guard ở đây
+  {
+    path: 'admin/login',
+    component: DangNhapAdminComponent
+  },
+
+  // Khu vực quản trị: cần đăng nhập
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [quanTriGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: TongQuanAdminComponent },
-      { path: 'users', component: QuanLyNguoiDungComponent },
-      {path:'users/:id', component: ChiTietNguoiDungComponent},
-      { path: 'reviews', component: QuanLyDanhGiaComponent },
-      { path: 'settings', component: CaiDatHeThongComponent },
-      { path: 'games', component: QuanLyTroChoiComponent },
-      { path: 'categories', component: QuanLyDanhMucComponent },
-      { path:'categories/:id', component: ChiTietDanhMucComponent},
-      { path: 'games/:id', component: ChiTietTroChoiComponent },
-      { path: 'promotions', component: QuanLyKhuyenMaiComponent },
-      { path: 'promotions/:id', component: ChiTietKhuyenMaiComponent },
-      {path:'orders', component: QuanLyDonHangComponent},
-      {path:'orders/:id', component: ChiTietDonHangComponent},
-      {path:'analytics', component: ThongKeDoanhThuComponent}
-
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        component: TongQuanAdminComponent
+      },
+      {
+        path: 'users',
+        component: QuanLyNguoiDungComponent
+      },
+      {
+        path: 'users/:id',
+        component: ChiTietNguoiDungComponent
+      },
+      {
+        path: 'reviews',
+        component: QuanLyDanhGiaComponent
+      },
+      {
+        path: 'settings',
+        component: CaiDatHeThongComponent
+      },
+      {
+        path: 'games',
+        component: QuanLyTroChoiComponent
+      },
+      {
+        path: 'games/:id',
+        component: ChiTietTroChoiComponent
+      },
+      {
+        path: 'categories',
+        component: QuanLyDanhMucComponent
+      },
+      {
+        path: 'categories/:id',
+        component: ChiTietDanhMucComponent
+      },
+      {
+        path: 'promotions',
+        component: QuanLyKhuyenMaiComponent
+      },
+      {
+        path: 'promotions/:id',
+        component: ChiTietKhuyenMaiComponent
+      },
+      {
+        path: 'orders',
+        component: QuanLyDonHangComponent
+      },
+      {
+        path: 'orders/:id',
+        component: ChiTietDonHangComponent
+      },
+      {
+        path: 'analytics',
+        component: ThongKeDoanhThuComponent
+      }
     ]
+  },
+
+  // URL không tồn tại
+  {
+    path: '**',
+    redirectTo: 'admin/login'
   }
 ];
+
+
+

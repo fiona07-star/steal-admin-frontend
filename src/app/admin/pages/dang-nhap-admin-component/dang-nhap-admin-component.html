@@ -1,1 +1,334 @@
-<p>dang-nhap-admin-component works!</p>
+<div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100">
+  <div class="card login-card text-white border-0 shadow-lg">
+
+    <!-- Header STEAL Bar Top -->
+    <div class="card-header-steal d-flex align-items-center justify-content-center gap-1 py-3 px-3">
+      <img 
+        src="https://res.cloudinary.com/dhbnmxe6t/image/upload/v1792316510/697b16f2-e2f5-45f1-80f3-45b009c7d060.png" 
+        alt="STEAL Logo" 
+        class="steal-logo-img"
+      />
+      <span class="steal-brand-title fw-bold text-uppercase m-0">STEAL</span>
+    </div>
+
+    <div class="card-body p-4">
+
+      <!-- 1. MÀN HÌNH: CỔNG TRUY CẬP BẢO MẬT (RSA GATE) -->
+      @if (currentStep === 'RSA_GATE') {
+        <div class="text-center py-3">
+          <div class="lock-icon-wrapper mb-3">
+            <i class="bi bi-shield-lock-fill fs-1 text-light opacity-85"></i>
+          </div>
+          <h5 class="fw-bold text-uppercase mb-2 title-gate">CỔNG TRUY CẬP BẢO MẬT</h5>
+          <p class="subtitle-gate mb-4">Khu vực quản trị hệ thống STEAL</p>
+
+          <!-- Trạng thái xác thực -->
+          <div class="status-indicator-box d-flex align-items-center justify-content-center gap-2 small my-4 py-2 px-3 rounded">
+            <span class="text-status-label">Trạng thái:</span>
+            @if (rsaStatus === 'WAITING') {
+              <span class="status-badge text-warning d-inline-flex align-items-center gap-1">
+                <span class="dot-status bg-warning"></span> Đang kết nối...
+              </span>
+            } @else if (rsaStatus === 'DENIED') {
+              <span class="status-badge text-danger d-inline-flex align-items-center gap-1">
+                <span class="dot-status bg-danger"></span> Quyền truy cập bị từ chối
+              </span>
+            } @else if (rsaStatus === 'SUCCESS') {
+              <span class="status-badge text-success d-inline-flex align-items-center gap-1">
+                <span class="dot-status bg-success"></span> Xác thực thành công
+              </span>
+            }
+          </div>
+
+          @if (rsaStatus === 'DENIED') {
+            <button type="button" class="btn btn-primary-steal px-4 py-2 fw-semibold" (click)="chayKiemTraRsa()">
+              <i class="bi bi-arrow-clockwise me-1"></i> Thử lại
+            </button>
+          } @else if (rsaStatus === 'SUCCESS') {
+            <button type="button" class="btn btn-primary-steal px-4 py-2 fw-semibold" (click)="currentStep = 'LOGIN_FORM'">
+              Tiếp tục <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          }
+        </div>
+      }
+      
+@if (currentStep === 'STEALTH_PIN') {
+  <div class="text-center py-3">
+    <div class="lock-icon-wrapper mb-3">
+      <i class="bi bi-shield-lock-fill"></i>
+    </div>
+
+    <h5 class="fw-bold text-uppercase mb-2 title-gate">
+      XÁC THỰC STEALTH PIN
+    </h5>
+
+    <p class="subtitle-gate mb-4">
+      Cổng xác thực dành riêng cho quản trị viên STEAL
+    </p>
+
+    <div class="status-indicator-box d-flex align-items-center justify-content-center gap-2 rounded">
+      @if (rsaStatus === 'SUCCESS') {
+        <span class="status-badge text-success">
+          <span class="dot-status bg-success"></span>
+          Xác thực thành công
+        </span>
+      } @else if (rsaStatus === 'DENIED') {
+        <span class="status-badge text-danger">
+          <span class="dot-status bg-danger"></span>
+          Truy cập bị từ chối
+        </span>
+      } @else {
+        <span class="status-badge text-warning">
+          <span class="dot-status bg-warning"></span>
+          Đang xác thực...
+        </span>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary-steal px-4 py-2 mt-3"
+      (click)="currentStep = 'LOGIN_FORM'">
+      Tiếp tục đăng nhập
+      <i class="bi bi-arrow-right ms-1"></i>
+    </button>
+
+    <div class="mt-3">
+      <button
+        type="button"
+        class="btn btn-link text-white text-decoration-none"
+        (click)="currentStep = 'RSA_GATE'">
+        <i class="bi bi-arrow-left"></i> Quay lại
+      </button>
+    </div>
+  </div>
+}
+
+      <!-- 2. MÀN HÌNH: ĐĂNG NHẬP HỆ THỐNG QUẢN TRỊ -->
+        @if (currentStep === 'LOGIN_FORM') {
+        <div>
+            <button type="button" class="btn btn-link text-white text-decoration-none p-0 mb-3 extra-small opacity-75" (click)="currentStep = 'RSA_GATE'">
+            <i class="bi bi-arrow-left"></i> Quay lại
+            </button>
+
+            <h5 class="fw-bold text-center text-uppercase mb-4 title-gate">ĐĂNG NHẬP HỆ THỐNG QUẢN TRỊ</h5>
+
+            <form [formGroup]="loginForm" (ngSubmit)="xuLyDangNhap()">
+            
+            <!-- Ô EMAIL -->
+            <div class="mb-3">
+                <label class="form-label extra-small text-uppercase fw-semibold text-light mb-1">ĐĂNG NHẬP BẰNG EMAIL</label>
+                <input 
+                type="email" 
+                formControlName="email" 
+                class="form-control custom-input-figma" 
+                [class.is-invalid-custom]="emailInvalid"
+                placeholder="Nhập email quản trị" 
+                />
+                <!-- Chỉ hiển thị dòng đỏ nếu ô EMAIL bị lỗi -->
+                @if (emailInvalid) {
+                <div class="text-danger extra-small mt-1 text-start">
+                    @if (loginForm.get('email')?.errors?.['required']) {
+                    * Vui lòng nhập email!
+                    } @else if (loginForm.get('email')?.errors?.['email']) {
+                    * Email không đúng định dạng!
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Ô MẬT KHẨU -->
+            <div class="mb-3">
+                <label class="form-label extra-small text-uppercase fw-semibold text-light mb-1">MẬT KHẨU</label>
+                <input 
+                type="password" 
+                formControlName="matKhau" 
+                class="form-control custom-input-figma" 
+                [class.is-invalid-custom]="matKhauInvalid"
+                placeholder="Nhập mật khẩu" 
+                />
+                <!-- Chỉ hiển thị dòng đỏ nếu ô MẬT KHẨU bị lỗi -->
+                @if (matKhauInvalid) {
+                <div class="text-danger extra-small mt-1 text-start">
+                    * Vui lòng nhập mật khẩu!
+                </div>
+                }
+            </div>
+
+            <!-- THÔNG BÁO LỖI CHUNG (Tự động biến mất khi gõ đúng lại) -->
+            @if (errorMessage && (loginForm.invalid || isLoginError)) {
+                <div class="text-danger extra-small text-center mb-2 fw-semibold">
+                {{ errorMessage }}
+                </div>
+            }
+
+            @if (loginAttempts > 0 && loginAttempts < 3) {
+                <div class="text-warning extra-small text-center mb-3">
+                Còn {{ 3 - loginAttempts }}/3 lần nhập. Nhập sai quá 3 lần tài khoản sẽ bị khóa 5 phút.
+                </div>
+            }
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary-steal w-60 py-2 fw-semibold">
+                Đăng nhập
+                </button>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="javascript:void(0)" class="text-light extra-small text-decoration-none opacity-75 hover-underline" (click)="moQuenMatKhau()">
+                Quên mật khẩu?
+                </a>
+            </div>
+
+            </form>
+        </div>
+        }
+
+      <!-- 3. MÀN HÌNH: TÀI KHOẢN BỊ TẠM KHÓA -->
+      @if (currentStep === 'LOCKED') {
+        <div class="text-center py-2">
+          <h5 class="fw-bold text-danger mb-3 d-flex align-items-center justify-content-center gap-2 text-uppercase">
+            <i class="bi bi-slash-circle-fill"></i> TÀI KHOẢN BỊ TẠM KHÓA
+          </h5>
+
+          <p class="extra-small text-light px-2 opacity-85">
+            Bạn đã nhập sai mật khẩu quá 3 lần liên tiếp. Để đảm bảo an toàn, chức năng đăng nhập bị tạm dừng trong:
+          </p>
+
+          <div class="timer-box my-3 fs-3 fw-bold text-warning d-flex align-items-center justify-content-center gap-2 py-2 rounded ">
+            <i class="bi bi-clock-history"></i> 
+            <span>{{ formatLockTime }}</span>
+          </div>
+
+          <p class="extra-small text-light opacity-75 mb-4">
+            Vui lòng thử lại sau hoặc liên hệ Super Admin nếu bạn quên mật khẩu.
+          </p>
+
+          <button 
+            type="button" 
+            class="btn btn-primary-steal px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" 
+            [disabled]="lockTimeLeft > 0" 
+            (click)="thuLaiKhiBiKhoa()">
+            <i class="bi bi-arrow-clockwise"></i> Thử lại
+          </button>
+        </div>
+      }
+
+      <!-- 4. MÀN HÌNH: XÁC THỰC BẢO MẬT 2FA -->
+      @if (currentStep === '2FA_RSA') {
+        <div class="text-center py-2">
+          <button type="button" class="btn btn-link text-white text-decoration-none p-0 mb-3 extra-small d-block text-start opacity-75" (click)="quayLaiLoginForm()">
+            <i class="bi bi-arrow-left"></i> Quay lại
+          </button>
+
+          <h5 class="fw-bold mb-2 text-uppercase title-gate">
+            <i class="bi bi-shield-check me-1"></i> XÁC THỰC BẢO MẬT
+          </h5>
+
+          <p class="extra-small text-light opacity-75 mb-4">
+            Vui lòng nhập mã Token 6 chữ số từ thiết bị bảo mật RSA Hardware Token
+          </p>
+
+          <div class="mb-3">
+            <input 
+              type="text" 
+              maxlength="6" 
+              [(ngModel)]="otpRsa" 
+              (keyup.enter)="xacNhanOtpRsa()"
+              class="form-control text-center fs-3 letter-spacing-lg bg-light text-dark fw-bold custom-input-figma py-2" 
+              placeholder="— — — — — —"
+            />
+            @if (otpError) {
+              <div class="text-danger extra-small mt-2">{{ otpError }}</div>
+            }
+          </div>
+
+          <p class="extra-small text-light opacity-75 mb-4">
+            ● Mã tự động làm mới sau 15s
+          </p>
+
+          <div class="d-flex justify-content-center gap-2">
+            <button type="button" class="btn btn-primary-steal px-4 py-2 fw-semibold w-50" (click)="xacNhanOtpRsa()">
+              Xác nhận
+            </button>
+            <button type="button" class="btn btn-outline-light px-3 py-2 w-50" (click)="quayLaiLoginForm()">
+              Thoát
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- 5. MÀN HÌNH: KHÔI PHỤC MẬT KHẨU -->
+      @if (currentStep === 'FORGOT_PASSWORD') {
+        <div>
+          <button type="button" class="btn btn-link text-white text-decoration-none p-0 mb-2 extra-small opacity-75" (click)="quayLaiLoginForm()">
+            <i class="bi bi-arrow-left"></i> Quay lại
+          </button>
+
+          <h5 class="fw-bold text-center mb-1 text-uppercase title-gate">🔑 KHÔI PHỤC MẬT KHẨU</h5>
+          <p class="extra-small text-light opacity-75 text-center mb-3">Nhập thông tin xác thực để tiến hành đặt lại mật khẩu quản trị</p>
+
+          <form [formGroup]="forgotForm" (ngSubmit)="xuLyDatLaiMatKhau()">
+            
+            <div class="mb-2">
+              <label class="form-label extra-small text-light m-0">Email Admin *:</label>
+              <input type="email" formControlName="emailAdmin" class="form-control custom-input-figma form-control-sm" placeholder="admin@steam.com" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label extra-small text-light m-0">Mã OTP gửi qua Email *:</label>
+              <div class="input-group input-group-sm">
+                <input type="text" formControlName="maOtpEmail" class="form-control custom-input-figma" placeholder="— — — —" />
+                <button 
+                  type="button" 
+                  class="btn btn-outline-light btn-sm extra-small" 
+                  [disabled]="otpResendCountdown > 0"
+                  (click)="guiLaiOtpEmail()">
+                  🔄 Gửi lại ({{ otpResendCountdown }}s)
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label extra-small text-light m-0">Mã Token 2FA (từ RSA Hardware) *:</label>
+              <input type="text" formControlName="maToken2FA" class="form-control custom-input-figma form-control-sm" placeholder="— — — — — —" />
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label extra-small text-light m-0">Mật khẩu mới *:</label>
+              <input type="password" formControlName="matKhauMoi" class="form-control custom-input-figma form-control-sm" placeholder="••••••••" />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label extra-small text-light m-0">Nhập lại mật khẩu mới *:</label>
+              <input type="password" formControlName="nhapLaiMatKhauMoi" class="form-control custom-input-figma form-control-sm" placeholder="••••••••" />
+            </div>
+
+            @if (forgotSuccessMessage) {
+              <div class="text-success extra-small text-center mb-2">{{ forgotSuccessMessage }}</div>
+            }
+
+            <div class="text-center mt-3">
+              <button type="submit" class="btn btn-primary-steal w-100 py-2 fw-bold btn-sm">
+                Đặt lại mật khẩu
+              </button>
+            </div>
+
+          </form>
+        </div>
+      }
+
+    </div>
+  </div>
+  
+<!-- XÓA SAU KHI TEST GIAO DIỆN -->
+<div class="dev-screen-switcher">
+  <button type="button" (click)="currentStep = 'RSA_GATE'">RSA Gate</button>
+  <button type="button" (click)="currentStep = 'STEALTH_PIN'">Stealth PIN</button>
+  <button type="button" (click)="currentStep = 'LOGIN_FORM'">Đăng nhập</button>
+  <button type="button" (click)="currentStep = '2FA_RSA'">OTP RSA</button>
+  <button type="button" (click)="currentStep = 'LOCKED'">Tạm khóa</button>
+  <button type="button" (click)="currentStep = 'FORGOT_PASSWORD'">Quên mật khẩu</button>
+</div>
+
+</div>

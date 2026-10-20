@@ -6,7 +6,7 @@ import { Router, RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   selector: 'app-thanh-tren-admin-component',
-  styleUrl: './thanh-tren-admin-component.scss',
+  styleUrl: './thanh-tren-admin-component.css',
   templateUrl: './thanh-tren-admin-component.html',
 })
 export class ThanhTrenAdminComponent {

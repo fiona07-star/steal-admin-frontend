@@ -1,0 +1,62 @@
+.sidebar {
+  width: 240px;
+  height: 100%;
+  min-height: calc(100vh - 56px);
+  background-color: #0e0d25;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.sidebar .cursor-pointer {
+  cursor: pointer;
+}
+
+.sidebar .nav-link {
+  transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar .nav-link.active {
+  background-color: #ffffff !important;
+  color: #1e1b4b !important;
+  font-weight: bold;
+}
+
+.sidebar .nav-link.active i,
+.sidebar .nav-link.active span {
+  color: #1e1b4b !important;
+}
+
+.sidebar .nav-link.active .arrow-icon {
+  color: #1e1b4b !important;
+}
+
+.sidebar .arrow-icon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.sidebar .arrow-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* 3 trang con xổ xuống */
+.sidebar .submenu .submenu-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar .submenu .submenu-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar .submenu .submenu-link.active-sub {
+  color: #ffffff;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.2);
+}

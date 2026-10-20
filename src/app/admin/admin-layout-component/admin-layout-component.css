@@ -1,0 +1,12 @@
+.admin-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-wrapper .content-body {
+  background: linear-gradient(180deg, #43468e 10%, #1a213b 88%);
+  overflow-y: auto;
+  height: 100%;
+}
