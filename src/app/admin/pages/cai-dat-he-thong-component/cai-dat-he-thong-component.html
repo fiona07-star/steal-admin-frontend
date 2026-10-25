@@ -1,1 +1,71 @@
-<p>cai-dat-he-thong-component works!</p>
+<div class="system-config-container">
+  <h2 class="page-title">CẤU HÌNH HỆ THỐNG</h2>
+
+  <!-- CÁC TAB CẤU HÌNH BÊN TRÊN -->
+  <div class="config-tabs-wrapper">
+    
+    <div class="config-tab-card" [class.active]="activeTab === 'thong-tin-chung'" (click)="selectTab('thong-tin-chung')">
+      <div class="tab-icon globe-icon"><i class="bi bi-globe2"></i></div>
+      <span class="tab-label">Thông tin chung</span>
+    </div>
+
+    <div class="config-tab-card" [class.active]="activeTab === 'thanh-toan'" (click)="selectTab('thanh-toan')">
+      <div class="tab-icon card-icon"><i class="bi bi-credit-card-fill"></i></div>
+      <span class="tab-label">Thanh toán</span>
+    </div>
+
+    <div class="config-tab-card" [class.active]="activeTab === 'bao-tri'" (click)="selectTab('bao-tri')">
+      <div class="tab-icon tools-icon"><i class="bi bi-tools"></i></div>
+      <span class="tab-label">Bảo trì</span>
+    </div>
+
+    <div class="config-tab-card" [class.active]="activeTab === 'phan-quyen'" (click)="selectTab('phan-quyen')">
+      <div class="tab-icon people-icon"><i class="bi bi-people-fill"></i></div>
+      <span class="tab-label">Phân quyền Admin</span>
+    </div>
+
+    <div class="config-tab-card" [class.active]="activeTab === 'thong-bao'" (click)="selectTab('thong-bao')">
+      <div class="tab-icon bell-icon"><i class="bi bi-bell-fill"></i></div>
+      <span class="tab-label">Thông báo</span>
+    </div>
+
+    <div class="config-tab-card" [class.active]="activeTab === 'chinh-sach'" (click)="selectTab('chinh-sach')">
+      <div class="tab-icon policy-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
+      <span class="tab-label">Chính sách</span>
+    </div>
+
+    <div class="config-tab-card" [class.active]="activeTab === 'hoa-don'" (click)="selectTab('hoa-don')">
+      <div class="tab-icon invoice-icon"><i class="bi bi-file-ruled"></i></div>
+      <span class="tab-label">Hóa đơn</span>
+    </div>
+
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- HIỂN THỊ COMPONENT CON TƯƠNG ỨNG THEO TAB ĐƯỢC CHỌN -->
+  @switch (activeTab) {
+    @case ('thong-tin-chung') {
+      <app-thong-tin-chung></app-thong-tin-chung>
+    }
+    @case ('thanh-toan') {
+      <app-thanh-toan></app-thanh-toan>
+    }
+    @case ('bao-tri') {
+      <app-bao-tri></app-bao-tri>
+    }
+    @case ('phan-quyen') {
+      <app-phan-quyen-admin></app-phan-quyen-admin>
+    }
+    @case ('thong-bao') {
+      <app-thong-bao></app-thong-bao>
+    }
+    @case ('chinh-sach') {
+      <app-chinh-sach></app-chinh-sach>
+    }
+    @case ('hoa-don') {
+      <app-hoa-don></app-hoa-don>
+    }
+  }
+
+</div>

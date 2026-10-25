@@ -1,0 +1,413 @@
+<div class="notification-tab-container">
+  
+  <!-- HÀNG 1: BUTTON TABS CHUYỂN ĐỔI -->
+  <div class="top-action-bar">
+    <div class="category-tabs-group">
+      <button 
+        type="button" 
+        class="btn-cat-tab cat-all" 
+        [class.active-tab]="activeCategory === 'all'" 
+        (click)="selectCategory('all')">
+        Tất cả
+      </button>
+
+      <button 
+        type="button" 
+        class="btn-cat-tab cat-admin" 
+        [class.active-tab]="activeCategory === 'admin'" 
+        (click)="selectCategory('admin')">
+        Thông báo Admin gửi
+      </button>
+
+      <button 
+        type="button" 
+        class="btn-cat-tab cat-system" 
+        [class.active-tab]="activeCategory === 'system'" 
+        (click)="selectCategory('system')">
+        Thông báo Hệ thống tự động
+      </button>
+    </div>
+
+    <!-- ẨN NÚT TẠO MỚI KHI Ở TAB HỆ THỐNG TỰ ĐỘNG -->
+    
+      <button type="button" class="btn-create-notification" (click)="taoThongBaoMoi()">
+        <i class="bi bi-plus-lg"></i> Tạo thông báo mới
+      </button>
+    
+  </div>
+
+  <!-- HÀNG 2: THANH TÌM KIẾM VÀ BỘ LỌC -->
+  <div class="filter-bar-row">
+    <div class="search-box">
+      <i class="bi bi-search search-icon"></i>
+      <input type="text" placeholder="Tìm theo tiêu đề hoặc nội dung..." [(ngModel)]="searchKey" />
+    </div>
+
+    <!-- ẨN DROPDOWN TRẠNG THÁI KHI SANG TAB HỆ THỐNG TỰ ĐỘNG -->
+    @if (activeCategory !== 'system') {
+      <div class="filter-select-wrapper filter-status">
+        <select [(ngModel)]="filterTrangThai" class="filter-select">
+          <option value="all">Trạng thái</option>
+          <option value="Đã gửi">Đã gửi</option>
+          <option value="Đã lên lịch">Đã lên lịch</option>
+          <option value="Nháp">Nháp</option>
+        </select>
+        <i class="bi bi-chevron-down arrow-icon"></i>
+      </div>
+    }
+
+    <div class="filter-select-wrapper filter-sort">
+      <select [(ngModel)]="sortOrder" class="filter-select">
+        <option value="newest">Sắp xếp</option>
+        <option value="newest">Mới nhất</option>
+        <option value="oldest">Cũ nhất</option>
+      </select>
+      <i class="bi bi-chevron-down arrow-icon"></i>
+    </div>
+  </div>
+
+  <!-- BẢNG DANH SÁCH DUY NHẤT -->
+  <div class="table-container">
+    <table class="notification-table">
+      <thead>
+        <tr>
+          <th class="col-checkbox">
+            <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()" class="custom-chk" />
+          </th>
+          <th class="col-content">Tiêu đề & nội dung</th>
+          <th class="col-status">Trạng thái</th>
+          <th class="col-date">Ngày gửi</th>
+          <th class="col-actions">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of filteredNotifications; track item.id) {
+          <tr>
+            <td class="col-checkbox">
+              <input type="checkbox" [(ngModel)]="item.selected" class="custom-chk" />
+            </td>
+
+            <td class="col-content">
+              <div class="notification-info-cell">
+                <span class="notification-title">
+                  @if (item.loaiNotification === 'system') {
+                    <i class="bi bi-cart-fill system-cart-icon"></i>
+                  }
+                  {{ item.tieuDe }}
+                </span>
+                <span class="notification-desc">{{ item.noiDungNgan }}</span>
+              </div>
+            </td>
+
+            <td class="col-status">
+              <span class="status-badge" [ngClass]="{
+                'status-sent': item.trangThai === 'Đã gửi',
+                'status-scheduled': item.trangThai === 'Đã lên lịch',
+                'status-draft': item.trangThai === 'Nháp',
+                'status-system-auto': item.trangThai === 'Tự động'
+              }">
+                {{ item.trangThai }}
+              </span>
+            </td>
+
+            <td class="col-date">{{ item.ngayGui }}</td>
+
+            <td class="col-actions">
+              <div class="action-links-group">
+                @if (item.loaiNotification === 'system' || item.trangThai === 'Đã gửi') {
+                  <button type="button" class="act-link act-blue" (click)="xemThongBao(item)">[Xem]</button>
+                  <button type="button" class="act-link act-red" (click)="xoaThongBao(item)">[Xóa]</button>
+                }
+
+                @if (item.loaiNotification === 'admin' && item.trangThai === 'Đã lên lịch') {
+                  <button type="button" class="act-link act-green" (click)="suaThongBao(item)">[Sửa]</button>
+                  <button type="button" class="act-link act-gray" (click)="huyLichGui(item)">[Hủy]</button>
+                  <button type="button" class="act-link act-red" (click)="xoaThongBao(item)">[Xóa]</button>
+                }
+
+                @if (item.loaiNotification === 'admin' && item.trangThai === 'Nháp') {
+                  <button type="button" class="act-link act-green" (click)="suaThongBao(item)">[Sửa]</button>
+                  <button type="button" class="act-link act-orange" (click)="guiNgayThongBao(item)">[Gửi ngay]</button>
+                  <button type="button" class="act-link act-red" (click)="xoaThongBao(item)">[Xóa]</button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- =========================================================
+     TRỌN BỘ 6 POPUP MODAL (ADMIN & HỆ THỐNG TỰ ĐỘNG)
+     ========================================================= -->
+
+<!-- POPUP 1: TẠO THÔNG BÁO MỚI (ADMIN) -->
+@if (showCreateModal) {
+  <div class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-container modal-form-wide" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-bell-fill header-icon-yellow"></i>
+          <h3 class="modal-title">TẠO THÔNG BÁO MỚI</h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeCreateModal()"><i class="bi bi-x"></i></button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label">Tiêu đề thông báo<span class="required-star">*</span></label>
+          <input type="text" class="modal-input input-wide" [(ngModel)]="formData.tieuDe" placeholder="Cyberpunk 2077 giảm giá 50% cực HOT!" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Nội dung thông báo<span class="required-star">*</span></label>
+          <textarea class="modal-textarea" [(ngModel)]="formData.noiDung" rows="3" placeholder="Cyberpunk 2077 hiện đang được giảm giá..."></textarea>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Đối tượng nhận<span class="required-star">*</span></label>
+          <div class="radio-group-row">
+            <label class="radio-option">
+              <input type="radio" name="doiTuongCreate" value="all" [(ngModel)]="formData.doiTuong" />
+              <i class="bi bi-globe icon-inline-blue"></i> Tất cả người dùng
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="doiTuongCreate" value="specific" [(ngModel)]="formData.doiTuong" />
+              <i class="bi bi-bullseye icon-inline-red"></i> Người dùng cụ thể
+            </label>
+          </div>
+          @if (formData.doiTuong === 'specific') {
+            <input type="text" class="modal-input input-wide input-error-border" [(ngModel)]="formData.nguoiNhanCuThe" placeholder="Nhập username hoặc tên người nhận..." />
+          }
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Lịch gửi<span class="required-star">*</span></label>
+          <div class="radio-group-row align-center">
+            <label class="radio-option">
+              <input type="radio" name="lichGuiCreate" value="now" [(ngModel)]="formData.lichGuiType" /> Gửi ngay lập tức
+            </label>
+            <label class="radio-option inline-schedule">
+              <input type="radio" name="lichGuiCreate" value="schedule" [(ngModel)]="formData.lichGuiType" /> Hẹn giờ gửi
+            </label>
+            @if (formData.lichGuiType === 'schedule') {
+              <input type="text" class="modal-input input-schedule-time" [(ngModel)]="formData.ngayHenGio" placeholder="15/10/2026 02:00" />
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeCreateModal()">Hủy</button>
+        <button type="button" class="btn-modal-orange" (click)="saveDraft()">Lưu nháp</button>
+        <button type="button" class="btn-modal-blue" (click)="sendNotification()">Gửi thông báo</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- POPUP 2: CHI TIẾT THÔNG BÁO (TỰ CHUYỂN DẠNG ADMIN HOẶC SYSTEM) -->
+@if (showDetailModal && selectedItem) {
+  <div class="modal-overlay" (click)="closeDetailModal()">
+    <div class="modal-container modal-form-wide" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-eye-fill header-icon-purple"></i>
+          <h3 class="modal-title">
+            {{ selectedItem.loaiNotification === 'system' ? 'CHI TIẾT THÔNG BÁO' : 'CHI TIẾT THÔNG BÁO ĐÃ GỬI' }}
+          </h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeDetailModal()"><i class="bi bi-x"></i></button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <!-- DẠNG HỆ THỐNG TỰ ĐỘNG -->
+      @if (selectedItem.loaiNotification === 'system') {
+        <div class="modal-body detail-body-lines">
+          <div class="detail-row"><strong class="detail-label">Mã sự kiện:</strong> <span>{{ selectedItem.maSuKien || '#NOTI-004' }}</span></div>
+          <div class="detail-row"><strong class="detail-label">Loại sự kiện:</strong> <span>{{ selectedItem.loaiSuKien || 'Đơn hàng mới thanh toán' }}</span></div>
+          <div class="detail-row"><strong class="detail-label">Thời gian phát sinh:</strong> <span>{{ selectedItem.thoiGianPhatSinh || '14/10/2026 - 22:00:00' }}</span></div>
+          <div class="detail-row detail-row-content">
+            <strong class="detail-label">Nội dung thông báo:</strong>
+            <div class="detail-desc-text">
+              {{ selectedItem.noiDungChiTietSystem || 'Khách hàng Nguyễn Thị Quỳnh (CUS-001) vừa hoàn tất thanh toán đơn hàng #HD-20261014-089 trị giá 800,000 VNĐ bằng ví MoMo. Hệ thống đã tự động xuất 01 Game Key Cyberpunk 2077.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer center-footer footer-system-detail">
+          <button type="button" class="btn-modal-blue btn-go-order" (click)="denTrangDonHang()">
+            <i class="bi bi-rocket-takeoff-fill"></i> Đến trang Đơn hàng
+          </button>
+        </div>
+      }
+
+      <!-- DẠNG ADMIN GỬI -->
+      @if (selectedItem.loaiNotification === 'admin') {
+        <div class="modal-body detail-body-lines">
+          <div class="detail-row"><strong class="detail-label">Trạng thái:</strong> <span class="status-green-dot"><i class="bi bi-circle-fill"></i> Đã gửi ({{ selectedItem.ngayGui }})</span></div>
+          <div class="detail-row"><strong class="detail-label">Đối tượng:</strong> <span><i class="bi bi-globe icon-inline-blue"></i> {{ selectedItem.doiTuong === 'all' ? 'Tất cả người dùng' : selectedItem.nguoiNhanCuThe }}</span></div>
+          <div class="detail-row"><strong class="detail-label">Tiêu đề thông báo:</strong> <span>{{ selectedItem.tieuDe }}</span></div>
+          <div class="detail-row detail-row-content"><strong class="detail-label">Nội dung thông báo:</strong> <div class="detail-desc-text">{{ selectedItem.noiDungNgan }}</div></div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- POPUP 3: CHỈNH SỬA THÔNG BÁO (ADMIN) -->
+@if (showEditModal && selectedItem) {
+  <div class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-container modal-form-wide" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-pencil-fill header-icon-yellow"></i>
+          <h3 class="modal-title">CHỈNH SỬA THÔNG BÁO</h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeEditModal()"><i class="bi bi-x"></i></button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label">Tiêu đề thông báo<span class="required-star">*</span></label>
+          <input type="text" class="modal-input input-wide" [(ngModel)]="formData.tieuDe" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Nội dung thông báo<span class="required-star">*</span></label>
+          <textarea class="modal-textarea" [(ngModel)]="formData.noiDung" rows="3"></textarea>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Đối tượng nhận<span class="required-star">*</span></label>
+          <div class="radio-group-row">
+            <label class="radio-option">
+              <input type="radio" name="doiTuongEdit" value="all" [(ngModel)]="formData.doiTuong" />
+              <i class="bi bi-globe icon-inline-blue"></i> Tất cả người dùng
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="doiTuongEdit" value="specific" [(ngModel)]="formData.doiTuong" />
+              <i class="bi bi-bullseye icon-inline-red"></i> Người dùng cụ thể
+            </label>
+          </div>
+          @if (formData.doiTuong === 'specific') {
+            <input type="text" class="modal-input input-wide input-error-border" [(ngModel)]="formData.nguoiNhanCuThe" placeholder="Nhập username hoặc tên người nhận..." />
+          }
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Lịch gửi<span class="required-star">*</span></label>
+          <div class="radio-group-row align-center">
+            <label class="radio-option">
+              <input type="radio" name="lichGuiEdit" value="now" [(ngModel)]="formData.lichGuiType" /> Gửi ngay lập tức
+            </label>
+            <label class="radio-option inline-schedule">
+              <input type="radio" name="lichGuiEdit" value="schedule" [(ngModel)]="formData.lichGuiType" /> Hẹn giờ gửi
+            </label>
+            @if (formData.lichGuiType === 'schedule') {
+              <input type="text" class="modal-input input-schedule-time" [(ngModel)]="formData.ngayHenGio" />
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeEditModal()">Hủy</button>
+        <button type="button" class="btn-modal-blue" (click)="updateNotification()">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- POPUP 4: XÁC NHẬN XÓA THÔNG BÁO -->
+@if (showDeleteModal && selectedItem) {
+  <div class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal-container modal-small-confirm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-trash-fill header-icon-gray"></i>
+          <h3 class="modal-title">XÁC NHẬN XÓA THÔNG BÁO</h3>
+        </div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-body confirm-body-center">
+        <div class="confirm-text-row">
+          <i class="bi bi-exclamation-triangle-fill warning-icon-yellow"></i>
+          <span>Bạn có chắc chắn muốn xóa thông báo này không? Hành động này không thể hoàn tác.</span>
+        </div>
+      </div>
+      <div class="modal-footer center-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeDeleteModal()">Hủy</button>
+        <button type="button" class="btn-modal-red" (click)="confirmDelete()"><i class="bi bi-trash-fill"></i> Xóa vĩnh viễn</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- POPUP 5: HỦY LỊCH GỬI THÔNG BÁO (ADMIN) -->
+@if (showCancelScheduleModal && selectedItem) {
+  <div class="modal-overlay" (click)="closeCancelScheduleModal()">
+    <div class="modal-container modal-medium-confirm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-slash-circle-fill header-icon-red"></i>
+          <h3 class="modal-title">HỦY LỊCH GỬI THÔNG BÁO</h3>
+        </div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-body confirm-body-left">
+        <div class="confirm-desc-text">
+          Hành động này sẽ hủy thời gian phát tự động vào <strong>{{ selectedItem.ngayGui }}</strong>. Thông báo sẽ được chuyển về dạng Nháp.
+        </div>
+        <div class="confirm-title-highlight">
+          <i class="bi bi-pin-angle-fill pin-icon-red"></i> Tiêu đề: "{{ selectedItem.tieuDe }}"
+        </div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-footer center-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeCancelScheduleModal()">Quay lại</button>
+        <button type="button" class="btn-modal-red" (click)="confirmCancelSchedule()">Hủy lịch</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- POPUP 6: XÁC NHẬN GỬI NGAY THÔNG BÁO (ADMIN) -->
+@if (showSendNowModal && selectedItem) {
+  <div class="modal-overlay" (click)="closeSendNowModal()">
+    <div class="modal-container modal-medium-confirm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-send-fill header-icon-rocket"></i>
+          <h3 class="modal-title">XÁC NHẬN GỬI THÔNG BÁO</h3>
+        </div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-body confirm-body-left">
+        <div class="confirm-desc-text">
+          Bạn có chắc chắn muốn phát thông báo này ngay lập tức đến tất cả người dùng không?
+        </div>
+        <div class="confirm-title-highlight">
+          <i class="bi bi-pin-angle-fill pin-icon-red"></i> Tiêu đề: "{{ selectedItem.tieuDe }}"
+        </div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-footer center-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeSendNowModal()">Hủy</button>
+        <button type="button" class="btn-modal-red" (click)="confirmSendNow()">Gửi Ngay</button>
+      </div>
+    </div>
+  </div>
+}

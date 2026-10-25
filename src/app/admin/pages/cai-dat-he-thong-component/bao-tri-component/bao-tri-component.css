@@ -1,0 +1,249 @@
+.maintenance-tab-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  font-family: 'Comme', 'Commissioner', sans-serif;
+  color: #FFFFFF;
+}
+
+.maintenance-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* TOGGLE SWITCH BẬT BẢO TRÌ */
+.toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 2px;
+}
+
+.custom-switch {
+  width: 36px;
+  height: 20px;
+  background: #7D7D8D;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.custom-switch.checked {
+  background: #3B82F6;
+}
+
+.switch-handle {
+  width: 16px;
+  height: 16px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.25s ease;
+}
+
+.custom-switch.checked .switch-handle {
+  transform: translateX(16px);
+}
+
+.toggle-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.3;
+}
+
+.toggle-desc {
+  font-size: 13.5px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.35;
+}
+
+/* LABEL & TEXTAREA TRÀN 100% CHIỀU RỘNG */
+.input-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #FFFFFF;
+  line-height: 1.3;
+}
+
+.required-star {
+  color: #F70000;
+  margin-left: 2px;
+}
+
+.maintenance-textarea {
+  width: 100%;
+  min-height: 95px;
+  background: rgba(217, 217, 217, 0.08);
+  border: 1px solid #7D7D8D;
+  border-radius: 5px;
+  padding: 10px 14px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-family: 'Comme', sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+  resize: vertical;
+}
+
+.maintenance-textarea:focus {
+  border-color: #3B82F6;
+}
+
+/* HÀNG CHỌN THỜI GIAN DÀN ĐỀU 2 BÊN */
+.time-range-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.time-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.datetime-input-wrapper {
+  position: relative;
+  width: 100%;
+  height: 36px;
+  background: rgba(217, 217, 217, 0.08);
+  border: 1px solid #7D7D8D;
+  border-radius: 5px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+.calendar-icon {
+  position: absolute;
+  left: 10px;
+  color: #FFFFFF;
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.datetime-input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding-left: 34px;
+  padding-right: 10px;
+  color: #FFFFFF;
+  font-size: 13.5px;
+  font-family: 'Comme', sans-serif;
+  outline: none;
+  cursor: pointer;
+}
+
+.datetime-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* KHUNG LƯU Ý DÀN RỘNG 100% VỚI CHỮ VỪA MẮT */
+.maintenance-warning-box {
+  width: 100%;
+  background: rgba(217, 217, 217, 0.05);
+  border: 1px solid rgba(125, 125, 141, 0.5);
+  border-radius: 5px;
+  padding: 14px 18px;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+.warning-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #F70000;
+  margin: 0 0 6px 0;
+}
+
+.warning-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #F70000;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.warning-list li {
+  margin-bottom: 3px;
+}
+
+/* NÚT LƯU THAY ĐỔI CĂN PHẢI */
+.save-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.btn-save-maintenance {
+  min-width: 135px;
+  height: 36px;
+  background: #3B82F6;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  color: #FFFFFF;
+  font-size: 14.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0 16px;
+  transition: background 0.2s ease;
+}
+
+.btn-save-maintenance:hover {
+  background: #2563eb;
+}
+
+.btn-icon {
+  font-size: 14px;
+}
+
+/* Ẩn icon picker mặc định của trình duyệt Chrome, Edge, Safari */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+/* Ẩn bớt nút bấm xọn thời gian trên Firefox */
+input[type="datetime-local"]::-moz-calendar-picker-indicator,
+input[type="date"]::-moz-calendar-picker-indicator {
+  display: none !important;
+}

@@ -1,0 +1,286 @@
+<div class="permission-tab-container">
+  
+  <h3 class="page-title">Quản lý tài khoản & Phân quyền Admin</h3>
+
+  <!-- THANH LỌC -->
+  <div class="filter-bar-row">
+    <div class="search-box">
+      <i class="bi bi-search search-icon"></i>
+      <input 
+        type="text" 
+        placeholder="Tìm theo tên, email hoặc tên tài khoản..." 
+        [(ngModel)]="searchKey" 
+      />
+    </div>
+
+    <div class="filter-select-wrapper">
+      <select [(ngModel)]="filterTrangThai" class="filter-select">
+        <option value="all">Trạng thái (Tất cả)</option>
+        <option value="Hoạt động">Hoạt động</option>
+        <option value="Đã khóa">Đã khóa</option>
+      </select>
+      <i class="bi bi-chevron-down arrow-icon"></i>
+    </div>
+
+    <div class="filter-select-wrapper">
+      <select [(ngModel)]="filterVaiTro" class="filter-select">
+        <option value="all">Vai trò (Tất cả)</option>
+        <option value="Super Admin">Super Admin</option>
+        <option value="Editor">Editor</option>
+        <option value="Staff">Staff</option>
+      </select>
+      <i class="bi bi-chevron-down arrow-icon"></i>
+    </div>
+
+    <button type="button" class="btn-add-admin" (click)="openAddAdminModal()">
+      <i class="bi bi-plus-lg"></i> Thêm admin
+    </button>
+  </div>
+
+  <!-- BẢNG DANH SÁCH -->
+  <div class="table-container">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th class="col-stt">#</th>
+          <th class="col-user">Username</th>
+          <th class="col-name">Họ tên</th>
+          <th class="col-role">Vai trò</th>
+          <th class="col-status">Trạng thái</th>
+          <th class="col-date">Lần cuối cập nhật</th>
+          <th class="col-actions">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of filteredAdmins; track item.stt) {
+          <tr>
+            <td class="col-stt">{{ item.stt }}</td>
+            <td class="col-user">
+              <div class="user-cell">
+                <img [src]="item.avatar" [alt]="item.username" (error)="$event.target.src='assets/images/logo.png'" class="user-avatar" />
+                <span>{{ item.username }}</span>
+              </div>
+            </td>
+            <td class="col-name">{{ item.hoTen }}</td>
+            <td class="col-role">
+              <span class="role-badge" [ngClass]="{
+                'role-super': item.vaiTro === 'Super Admin',
+                'role-editor': item.vaiTro === 'Editor',
+                'role-staff': item.vaiTro === 'Staff'
+              }">
+                {{ item.vaiTro }}
+              </span>
+            </td>
+            <td class="col-status">
+              <span class="status-text" [class.status-active]="item.trangThai === 'Hoạt động'" [class.status-locked]="item.trangThai === 'Đã khóa'">
+                {{ item.trangThai }}
+              </span>
+            </td>
+            <td class="col-date">{{ item.lanCuoiCapNhat }}</td>
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button type="button" class="btn-action edit" (click)="editAdmin(item)" title="Chỉnh sửa">
+                  <i class="bi bi-pencil-fill"></i>
+                </button>
+
+                @if (item.vaiTro !== 'Super Admin') {
+                  <button type="button" class="btn-action lock" (click)="toggleLockStatus(item)" [title]="item.trangThai === 'Hoạt động' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'">
+                    <i class="bi" [class.bi-lock-fill]="item.trangThai === 'Hoạt động'" [class.bi-unlock-fill]="item.trangThai === 'Đã khóa'"></i>
+                  </button>
+
+                  <button type="button" class="btn-action delete" (click)="openDeleteModal(item)" title="Xóa tài khoản">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ==========================================
+     POPUP 1: THÊM TÀI KHOẢN ADMIN MỚI
+     ========================================== -->
+@if (showAddModal) {
+  <div class="modal-overlay" (click)="closeAddAdminModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-person-fill modal-title-icon"></i>
+          <h3 class="modal-title">THÊM TÀI KHOẢN ADMIN MỚI</h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeAddAdminModal()">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label">Username<span class="required-star">*</span>:</label>
+          <input type="text" class="modal-input input-medium" placeholder="adminphu01" [(ngModel)]="newAdminData.username" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Họ và tên<span class="required-star">*</span>:</label>
+          <input type="text" class="modal-input input-medium-long" placeholder="Nguyễn Văn A" [(ngModel)]="newAdminData.hoTen" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Email đăng nhập<span class="required-star">*</span>:</label>
+          <input type="email" class="modal-input input-long" placeholder="nguyenvana@stealgame.vn" [(ngModel)]="newAdminData.email" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Mật khẩu khởi tạo<span class="required-star">*</span>:</label>
+          <div class="password-input-wrapper input-medium">
+            <input [type]="showAddPassword1 ? 'text' : 'password'" class="modal-input" placeholder="••••••••••••" [(ngModel)]="newAdminData.matKhau" />
+            <i class="bi" [class.bi-eye-fill]="showAddPassword1" [class.bi-eye-slash-fill]="!showAddPassword1" (click)="showAddPassword1 = !showAddPassword1"></i>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Xác nhận lại mật khẩu<span class="required-star">*</span>:</label>
+          <div class="password-input-wrapper input-medium">
+            <input [type]="showAddPassword2 ? 'text' : 'password'" class="modal-input" placeholder="••••••••••••" [(ngModel)]="newAdminData.xacNhanMatKhau" />
+            <i class="bi" [class.bi-eye-fill]="showAddPassword2" [class.bi-eye-slash-fill]="!showAddPassword2" (click)="showAddPassword2 = !showAddPassword2"></i>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Vai trò (Quyền hạn)<span class="required-star">*</span>:</label>
+          <div class="select-wrapper input-medium-long">
+            <select class="modal-input select-input" [(ngModel)]="newAdminData.vaiTro">
+              <option value="Staff">Staff (Nhân viên vận hành)</option>
+              <option value="Editor">Editor (Biên tập viên)</option>
+              <option value="Super Admin">Super Admin (Quản trị cao cấp)</option>
+            </select>
+            <i class="bi bi-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeAddAdminModal()">Hủy</button>
+        <button type="button" class="btn-modal-save" (click)="createAdmin()">Tạo Admin</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ==========================================
+     POPUP 2: CẬP NHẬT TÀI KHOẢN ADMIN
+     ========================================== -->
+@if (showEditModal) {
+  <div class="modal-overlay" (click)="closeEditAdminModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-pencil-fill modal-title-icon icon-edit-blue"></i>
+          <h3 class="modal-title">CẬP NHẬT TÀI KHOẢN ADMIN</h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeEditAdminModal()">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label">
+            Username: <span class="username-static-val">{{ editAdminData.username }}</span>
+          </label>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Họ và tên<span class="required-star">*</span>:</label>
+          <input type="text" class="modal-input input-medium-long" [(ngModel)]="editAdminData.hoTen" placeholder="Nhập họ và tên..." />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Email đăng nhập<span class="required-star">*</span>:</label>
+          <input type="email" class="modal-input input-long" [(ngModel)]="editAdminData.email" placeholder="Nhập email..." />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Vai trò (Quyền hạn)<span class="required-star">*</span>:</label>
+          <div class="select-wrapper input-medium-long">
+            <select class="modal-input select-input" [(ngModel)]="editAdminData.vaiTro">
+              <option value="Staff">Staff (Nhân viên vận hành)</option>
+              <option value="Editor">Editor (Biên tập viên)</option>
+              <option value="Super Admin">Super Admin (Quản trị cao cấp)</option>
+            </select>
+            <i class="bi bi-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Đổi mật khẩu<span class="required-star">*</span>:</label>
+          <div class="password-input-wrapper input-medium">
+            <input [type]="showEditPassword ? 'text' : 'password'" class="modal-input" placeholder="••••••••••••" [(ngModel)]="editAdminData.matKhauMoi" />
+            <i class="bi" [class.bi-eye-fill]="showEditPassword" [class.bi-eye-slash-fill]="!showEditPassword" (click)="showEditPassword = !showEditPassword"></i>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeEditAdminModal()">Hủy</button>
+        <button type="button" class="btn-modal-save" (click)="updateAdmin()">Lưu</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ==========================================
+     POPUP 3: XÁC NHẬN XÓA TÀI KHOẢN (CHUẨN FIGMA)
+     ========================================== -->
+@if (showDeleteModal && selectedAdminToDelete) {
+  <div class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal-container modal-delete-container" (click)="$event.stopPropagation()">
+      
+      <!-- HEADER POPUP XÓA -->
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-exclamation-triangle-fill warning-icon-yellow"></i>
+          <h3 class="modal-title">XÁC NHẬN XÓA TÀI KHOẢN</h3>
+        </div>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <!-- BODY POPUP XÓA -->
+      <div class="modal-body delete-modal-body">
+        <div class="delete-statement-row">
+          <strong>Hành động này sẽ xóa hoàn toàn tài khoản Admin:</strong>
+        </div>
+        
+        <div class="delete-username-highlight">
+        <strong>Username:</strong> {{ selectedAdminToDelete.username }} ({{ selectedAdminToDelete.hoTen }})
+        </div>
+
+        <div class="delete-warning-red-text">
+          <span class="red-bold">Cảnh báo:</span> Tài khoản bị xóa sẽ không thể khôi phục. Lịch sử thao tác trước đây của admin này vẫn được lưu trong hệ thống log.
+        </div>
+      </div>
+
+      <!-- FOOTER POPUP XÓA -->
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeDeleteModal()">Hủy</button>
+        <button type="button" class="btn-modal-delete-confirm" (click)="confirmDeleteAdmin()">
+          <i class="bi bi-trash-fill"></i> Xóa vĩnh viễn
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

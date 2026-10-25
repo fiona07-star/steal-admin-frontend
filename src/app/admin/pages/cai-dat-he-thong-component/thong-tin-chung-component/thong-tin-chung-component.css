@@ -1,0 +1,265 @@
+.tab-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ĐƯỜNG KẺ PHÂN CÁCH KHỐI */
+.block-divider {
+  width: 100%;
+  height: 1px;
+  background: #7d7d8d;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin: 8px 0 16px 0;
+}
+
+/* KHỐI NỘI DUNG */
+.content-block {
+  margin-bottom: 8px;
+}
+
+.block-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+}
+
+/* GRID INPUTS HÀNG TRÊN */
+.form-grid-top {
+  display: grid;
+  grid-template-columns: 2fr 1.8fr 2fr 1.5fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13.5px;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+.form-group label .required {
+  color: #f70000;
+  margin-left: 2px;
+}
+
+.form-group input,
+.form-group textarea {
+  background: transparent;
+  border: 1px solid #7d7d8d;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 5px;
+  padding: 6px 12px;
+  color: #ffffff;
+  font-family: 'Comme', sans-serif;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #3b82f6;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 10px;
+  color: #7d7d8d;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding-left: 32px;
+}
+
+.input-with-counter {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-counter input {
+  width: 100%;
+  padding-right: 55px;
+}
+
+.char-counter {
+  position: absolute;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 100;
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* KHU VỰC UPLOAD LOGO KÉO SÁT NHAU VỀ TĂM GIỮA */
+.logo-upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 40px;
+  padding: 12px 0;
+  box-sizing: border-box;
+}
+
+.logo-upload-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.logo-label {
+  font-size: 14px;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+.logo-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-img-wrapper {
+  width: 66px;
+  height: 68px;
+  border: 1px solid #7d7d8d;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1b2038;
+  flex-shrink: 0;
+}
+
+.logo-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.btn-change-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid #3b82f6;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 5px;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.btn-change-logo:hover {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.logo-note {
+  font-size: 12px;
+  font-weight: 100;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.logo-vertical-divider {
+  width: 1px;
+  height: 75px;
+  background: #7d7d8d;
+  flex-shrink: 0;
+}
+
+/* FOOTER ACTIONS ROW */
+.footer-actions-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-bottom: 28px;
+}
+
+.update-time-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
+  padding-top: 4px;
+}
+
+/* ĐẨY 2 NÚT THAO TÁC XUỐNG DƯỚI DÒNG CẬP NHẬT 1 XÍU */
+.btn-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.btn-reset {
+  height: 32px;
+  padding: 0 16px;
+  background: #7d7d8d;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-save {
+  height: 32px;
+  padding: 0 18px;
+  background: #3b82f6;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-reset:hover,
+.btn-save:hover {
+  filter: brightness(1.1);
+}

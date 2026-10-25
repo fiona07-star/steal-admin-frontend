@@ -1,0 +1,153 @@
+<div class="invoice-page-container">
+  
+  <!-- HÀNG TIÊU ĐỀ TRANG & NÚT KHÔI PHỤC MẶC ĐỊNH -->
+  <div class="top-header-bar">
+    <h2 class="page-title">Quản lý hóa đơn</h2>
+    <button type="button" class="btn-reset-default" (click)="khoiPhucMacDinh()">
+      <i class="bi bi-arrow-repeat"></i> Khôi phục mặc định
+    </button>
+  </div>
+
+  <!-- BẢNG TỔNG 2 CỘT -->
+  <div class="invoice-main-card">
+    
+    <!-- HEADER BANNER -->
+    <div class="card-header-banner">
+      <div class="col-left-header">THÔNG TIN HÓA ĐƠN</div>
+      <div class="col-right-header">XEM TRƯỚC MẪU HÓA ĐƠN</div>
+    </div>
+
+    <!-- KHUNG NỘI DUNG 2 CỘT -->
+    <div class="card-body-content">
+      
+      <!-- CỘT TRÁI: FORM NHẬP THÔNG TIN HÓA ĐƠN -->
+      <div class="form-left-panel">
+        
+        <div class="form-group">
+          <label class="form-label">Tên Cửa hàng trên hóa đơn:</label>
+          <input 
+            type="text" 
+            class="form-input" 
+            [(ngModel)]="invoiceData.tenCuaHang" 
+            placeholder="STEAL GAME STORE" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Hỗ trợ trên hóa đơn:</label>
+          <input 
+            type="email" 
+            class="form-input" 
+            [(ngModel)]="invoiceData.emailHoTro" 
+            placeholder="support@stealgame.vn" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Hotline trên hóa đơn:</label>
+          <input 
+            type="text" 
+            class="form-input" 
+            [(ngModel)]="invoiceData.hotline" 
+            placeholder="0983622544" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ghi chú / Lời cảm ơn chân trang:</label>
+          <textarea 
+            class="form-textarea" 
+            rows="3" 
+            [(ngModel)]="invoiceData.ghiChu" 
+            placeholder="Cảm ơn bạn đã mua sắm tại STEAL! Mọi hỗ trợ xin liên hệ hotline."></textarea>
+        </div>
+
+        <div class="form-action-row">
+          <button type="button" class="btn-save-changes" (click)="luuThayDoi()">
+            <i class="bi bi-folder-fill"></i> Lưu thay đổi
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ĐƯỜNG PHÂN CÁCH DỌC -->
+      <div class="vertical-divider"></div>
+
+      <!-- CỘT PHẢI: XEM TRƯỚC MẪU HÓA ĐƠN PAPER -->
+      <div class="preview-right-panel">
+        
+        <!-- TỜ GIẤY HÓA ĐƠN TRẮNG (A4 PAPER STYLE) -->
+        <div class="invoice-paper">
+          
+          <div class="paper-header-title">HÓA ĐƠN BÁN HÀNG</div>
+          <div class="paper-line"></div>
+
+          <!-- THÔNG TIN STORE & LOGO -->
+          <div class="store-info-row">
+            <div class="store-logo-box">
+              <img src="assets/images/logo.png" alt="Logo Store" class="store-logo-img" (error)="onImageError($event)" />
+            </div>
+            <div class="store-details">
+              <h3 class="store-name">{{ invoiceData.tenCuaHang || 'STEAL GAME STORE' }}</h3>
+              <p class="store-text"><strong>Email:</strong> {{ invoiceData.emailHoTro || 'support@stealgame.vn' }}</p>
+              <p class="store-text"><strong>Hotline:</strong> {{ invoiceData.hotline || '0983622544' }}</p>
+              <p class="store-text"><strong>Mã HD:</strong> #INV-20261003-001</p>
+            </div>
+          </div>
+
+          <div class="paper-line"></div>
+
+          <!-- THÔNG TIN KHÁCH HÀNG & GIAO DỊCH -->
+          <div class="customer-info-block">
+            <p class="customer-text"><strong>KHÁCH HÀNG:</strong> quynh (quynh@gmail.com)</p>
+            <p class="customer-text"><strong>NGÀY MUA:</strong> 03/10/2026 15:30</p>
+          </div>
+
+          <div class="paper-line"></div>
+
+          <!-- BẢNG SẢN PHẨM MUA -->
+          <table class="paper-table">
+            <thead>
+              <tr>
+                <th class="col-stt">STT</th>
+                <th class="col-product">SẢN PHẨM</th>
+                <th class="col-price">GIÁ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-stt">1</td>
+                <td class="col-product">Cyberpunk 2077</td>
+                <td class="col-price">495.000đ</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="paper-line"></div>
+
+          <!-- TỔNG TIỀN & PHƯƠNG THỨC THANH TOÁN -->
+          <div class="summary-block">
+            <div class="total-row">
+              <span class="total-label">TỔNG THÀNH TIỀN:</span>
+              <span class="total-amount">495.000đ</span>
+            </div>
+            <p class="payment-method">
+              <strong>Thanh toán:</strong> Ví MoMo (Mã GD: MOMO-9928104812)
+            </p>
+          </div>
+
+          <div class="paper-line"></div>
+
+          <!-- LỜI CẢM ƠN CHÂN TRANG -->
+          <div class="paper-footer-thanks">
+            “{{ invoiceData.ghiChu || 'Cảm ơn bạn đã mua sắm tại STEAL! Mọi hỗ trợ xin liên hệ hotline hoặc email.' }}”
+          </div>
+
+        </div>
+
+        
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

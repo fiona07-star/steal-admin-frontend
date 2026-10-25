@@ -1,12 +1,31 @@
 .admin-wrapper {
   height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Khóa cuộn trang chính */
+}
+
+/* Container chứa Sidebar + Content Body */
+.admin-main-container {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 60px); /* Trừ đi chiều cao Topbar Header */
+  min-height: 0; /* QUAN TRỌNG: Cho phép child element bứt phá Flexbox để Scroll */
   overflow: hidden;
 }
 
-.admin-wrapper .content-body {
-  background: linear-gradient(180deg, #43468e 10%, #1a213b 88%);
-  overflow-y: auto;
+/* Thanh bên (Sidebar) cố định */
+app-thanh-ben-admin {
+  flex-shrink: 0;
   height: 100%;
+}
+
+/* Vùng nội dung bên phải */
+.admin-wrapper .content-body {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: linear-gradient(180deg, #43468e 10%, #1a213b 88%);
+  overflow: hidden; /* Nhường quyền cuộn độc lập cho trang khách hàng */
 }

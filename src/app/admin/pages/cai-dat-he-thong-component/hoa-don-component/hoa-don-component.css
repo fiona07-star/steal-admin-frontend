@@ -1,0 +1,327 @@
+.invoice-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  font-family: 'Comme', 'Commissioner', sans-serif;
+  color: #FFFFFF;
+}
+
+/* HÀNG TIÊU ĐỀ TRANG */
+.top-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.btn-reset-default {
+  height: 34px;
+  padding: 0 14px;
+  background: #7D7D8D;
+  border-radius: 5px;
+  border: none;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  transition: background 0.2s ease;
+}
+
+.btn-reset-default:hover {
+  background: #686875;
+}
+
+/* KHUNG BẢNG TỔNG 2 CỘT */
+.invoice-main-card {
+  width: 100%;
+  background: rgba(217, 217, 217, 0.1);
+  border: 1px solid #7D7D8D;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* BANNER HEADER CỦA BẢNG */
+.card-header-banner {
+  height: 44px;
+  background: #3D445E;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  border-bottom: 1px solid #7D7D8D;
+}
+
+.col-left-header {
+  width: 320px;
+  padding-left: 20px;
+  flex-shrink: 0;
+}
+
+.col-right-header {
+  flex: 1;
+  padding-left: 20px;
+}
+
+/* KHUNG NỘI DUNG 2 CỘT */
+.card-body-content {
+  display: flex;
+  min-height: 420px;
+  position: relative;
+}
+
+/* CỘT TRÁI: FORM NHẬP */
+.form-left-panel {
+  width: 320px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.form-input {
+  height: 36px;
+  background: transparent;
+  border: 1px solid #7D7D8D;
+  border-radius: 2px;
+  padding: 0 10px;
+  color: #FFFFFF;
+  font-size: 14.5px;
+  outline: none;
+  box-shadow: inset 0px 1px 3px rgba(0,0,0,0.3);
+}
+
+.form-textarea {
+  background: transparent;
+  border: 1px solid #7D7D8D;
+  border-radius: 2px;
+  padding: 8px 10px;
+  color: #FFFFFF;
+  font-size: 14px;
+  line-height: 1.4;
+  outline: none;
+  resize: vertical;
+  box-shadow: inset 0px 1px 3px rgba(0,0,0,0.3);
+  font-family: 'Comme', sans-serif;
+}
+
+.form-action-row {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-save-changes {
+  height: 36px;
+  padding: 0 18px;
+  background: #3B82F6;
+  border-radius: 5px;
+  border: none;
+  color: #FFFFFF;
+  font-size: 14.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  transition: background 0.2s ease;
+}
+
+.btn-save-changes:hover {
+  background: #2563EB;
+}
+
+.vertical-divider {
+  width: 1px;
+  background: #7D7D8D;
+}
+
+/* CỘT PHẢI: PREVIEW GIẤY HÓA ĐƠN */
+.preview-right-panel {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* TỜ GIẤY HÓA ĐƠN TRẮNG DẠNG PAPER (CHUẨN MAU FIGMA) */
+.invoice-paper {
+  width: 100%;
+  max-width: 580px;
+  background: #FFFFFF;
+  color: #000000;
+  padding: 16px 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paper-header-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  padding-bottom: 4px;
+}
+
+.paper-line {
+  width: 100%;
+  height: 1px;
+  background: #7D7D8D;
+  opacity: 0.5;
+}
+
+.store-info-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.store-logo-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #EAEAEF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.store-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.store-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.store-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: #000000;
+}
+
+.store-text {
+  font-size: 13.5px;
+  margin: 0;
+  color: #000000;
+}
+
+.customer-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 0;
+}
+
+.customer-text {
+  font-size: 13.5px;
+  margin: 0;
+  color: #000000;
+}
+
+/* BẢNG GIẤY HÓA ĐƠN */
+.paper-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2px 0;
+}
+
+.paper-table th {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #000000;
+  padding: 4px;
+}
+
+.paper-table td {
+  font-size: 13.5px;
+  color: #000000;
+  padding: 4px;
+}
+
+.col-stt { width: 10%; text-align: center; }
+.col-product { width: 60%; text-align: left; }
+.col-price { width: 30%; text-align: right; }
+
+.summary-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.total-amount {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.payment-method {
+  font-size: 13.5px;
+  margin: 0;
+}
+
+.paper-footer-thanks {
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  font-style: italic;
+  color: #333333;
+  padding-top: 4px;
+}
+

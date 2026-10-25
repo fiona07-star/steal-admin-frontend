@@ -1,25 +1,24 @@
-
 import { inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { CanActivateFn, Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
-export const quanTriGuard: CanActivateFn = () => {
+export const quanTriGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const platformId = inject(PLATFORM_ID);
 
-  // Chỉ truy cập localStorage trên trình duyệt
-  if (!isPlatformBrowser(platformId)) {
-    return router.parseUrl('/admin/login');
+  // 1. Nếu đang chạy trên Trình duyệt (Client) -> Kiểm tra Auth thực tế
+  if (isPlatformBrowser(platformId)) {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+    if (isLoggedIn) {
+      return true; // Đã đăng nhập -> Cho phép vào trang Admin
+    }
+
+    // Chưa đăng nhập -> Chuyển về trang login
+    router.navigate(['/admin/login']);
+    return false;
   }
 
-  const adminToken = localStorage.getItem('admin_token');
-
-  if (adminToken) {
-    return true;
-  }
-
-  // Thông báo giống ví dụ trong slide
-  alert('Bạn cần đăng nhập để truy cập trang quản trị!');
-
-  return router.parseUrl('/admin/login');
+  // 2. Nếu đang render trên Server (SSR) -> Bỏ qua redirect để tránh AbortError
+  return true;
 };

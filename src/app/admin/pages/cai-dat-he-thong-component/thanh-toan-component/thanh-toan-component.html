@@ -1,0 +1,321 @@
+<!-- ==========================================
+     MAN HÌNH 1: DANH SÁCH PHƯƠNG THỨC THANH TOÁN
+     ========================================== -->
+@if (currentView === 'list') {
+  <div class="payment-tab-content">
+    
+    <div class="history-link-row">
+      <button type="button" class="btn-history" (click)="xemLichSu()">
+        <i class="bi bi-clock-history"></i> Lịch sử thay đổi
+      </button>
+    </div>
+
+    <div class="payment-methods-list">
+      @for (item of danhSachThanhToan; track item.maPhuongThuc) {
+        <div class="payment-method-item">
+          <div class="payment-logo-box">
+            <img [src]="item.logo" [alt]="item.tenHienThi" (error)="$event.target.src='assets/images/logo.png'" />
+          </div>
+
+          <div class="payment-info">
+            <div class="payment-name">{{ item.tenHienThi }}</div>
+            <div class="payment-desc">{{ item.moTaNgan }}</div>
+            <div class="payment-status-badge" [class.active]="item.trangThaiKichHoat" [class.inactive]="!item.trangThaiKichHoat">
+              {{ item.trangThaiKichHoat ? 'Đang hoạt động' : 'Tạm dừng' }}
+            </div>
+          </div>
+
+          <div class="payment-controls">
+            <div class="custom-switch" [class.checked]="item.trangThaiKichHoat" (click)="toggleTrangThai(item)">
+              <div class="switch-handle"></div>
+            </div>
+
+            <button type="button" class="btn-gear" (click)="openConfigModal(item)" title="Cấu hình chi tiết">
+              <i class="bi bi-gear-fill"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="payment-item-divider"></div>
+      }
+
+      <div class="payment-method-item add-new-item" (click)="openAddModal()">
+        <div class="add-icon-box">
+          <i class="bi bi-plus-lg"></i>
+        </div>
+        <span class="add-text">Thêm phương thức thanh toán mới</span>
+      </div>
+    </div>
+
+    <div class="security-warning-box">
+      <i class="bi bi-shield-check security-icon"></i>
+      <div class="security-text">
+        <strong>Lưu ý bảo mật:</strong> Không lưu Client Secret, Access Key, Secret Key hoặc Hash Secret trong dữ liệu mà Angular có thể đọc. Các thông tin nhạy cảm cần được lưu và sử dụng tại Backend.
+      </div>
+    </div>
+
+  </div>
+}
+
+<!-- ==========================================
+     MAN HÌNH 2: LỊCH SỬ THAY ĐỔI CẤU HÌNH (ĐÃ ĐIỀU CHỈNH)
+     ========================================== -->
+@if (currentView === 'history') {
+  <div class="history-view-container">
+    
+    <!-- NÚT QUAY LẠI CHUẨN FIGMA MAU TRẮNG/SÁNG -->
+    <div class="back-button-row" (click)="quayLaiDanhSach()">
+      <i class="bi bi-arrow-return-left back-icon"></i>
+      <span>Quay lại</span>
+    </div>
+
+    <!-- TIÊU ĐỀ MAN HÌNH LỊCH SỬ -->
+    <h2 class="history-page-title">LỊCH SỬ THAY ĐỔI CẤU HÌNH CỔNG THANH TOÁN</h2>
+
+    <!-- THANH TÌM KIẾM VÀ BỘ LỌC THỜI GIAN ĐÃ BỔ SUNG CHỌN NGÀY THÁNG NĂM -->
+    <div class="history-filter-bar">
+      <!-- Ô TÌM KIẾM MỞ RỘNG TRÀN DÒNG -->
+      <div class="history-search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input 
+          type="text" 
+          placeholder="Tìm theo Admin, Tên cổng..." 
+          [(ngModel)]="searchHistoryKey" 
+        />
+      </div>
+
+      <!-- BỘ LỌC THỜI GIAN VỚI ĐẦY ĐỦ OPTION VÀ TÙY CHỌN NGÀY -->
+      <div class="history-date-filter">
+        <i class="bi bi-calendar-event date-icon"></i>
+        <select [(ngModel)]="filterTimeRange">
+          <option value="all">Tất cả thời gian</option>
+          <option value="today">Hôm nay</option>
+          <option value="yesterday">Hôm qua</option>
+          <option value="last_7_days">7 ngày qua</option>
+          <option value="this_month">Tháng này</option>
+          <option value="last_month">Tháng trước</option>
+          <option value="custom">Tùy chọn khoảng ngày...</option>
+        </select>
+        <i class="bi bi-chevron-down arrow-icon"></i>
+      </div>
+
+      <!-- HIỂN THỊ KHU VỰC CHỌN NGÀY NẾU CHỌN "TÙY CHỌN KHỎANG NGÀY" -->
+      @if (filterTimeRange === 'custom') {
+        <div class="custom-date-range">
+          <input type="date" [(ngModel)]="fromDate" class="date-picker-input" title="Từ ngày" />
+          <span class="range-separator">-</span>
+          <input type="date" [(ngModel)]="toDate" class="date-picker-input" title="Đến ngày" />
+        </div>
+      }
+    </div>
+
+    <!-- KHUNG DANH SÁCH LỊCH SỬ -->
+    <div class="history-list-card">
+      @for (log of danhSachLichSu; track log.id; let last = $last) {
+        <div class="history-item">
+          <!-- CHỈ GIỮ 1 ICON ĐẠI DIỆN TRẠNG THÁI SÁT BÊN TRÁI -->
+          <div class="history-status-icon">
+            @if (log.loaiThaoTac === 'kich-hoat') {
+              <span class="status-dot green-dot"></span>
+            }
+            @if (log.loaiThaoTac === 'cap-nhat') {
+              <i class="bi bi-gear-fill gear-dot"></i>
+            }
+            @if (log.loaiThaoTac === 'tat') {
+              <span class="status-dot red-dot"></span>
+            }
+          </div>
+
+          <!-- NỘI DUNG LỊCH SỬ TRÌNH BÀY SẠCH SẼ -->
+          <div class="history-content">
+            <div class="history-time">{{ log.thoiGian }}</div>
+            <div class="history-detail-lines">
+              <div><strong>Người thực hiện:</strong> {{ log.nguoiThucHien }}</div>
+              <div><strong>Thao tác:</strong> {{ log.thaoTac }}</div>
+              <div><strong>Cổng tác động:</strong> {{ log.congTacDong }}</div>
+              <div><strong>Chi tiết:</strong> {{ log.chiTiet }}</div>
+            </div>
+          </div>
+        </div>
+
+        @if (!last) {
+          <div class="history-item-divider"></div>
+        }
+      }
+    </div>
+
+  </div>
+}
+
+<!-- POPUP 1: CẤU HÌNH CỔNG THANH TOÁN -->
+@if (showConfigModal) {
+  <div class="modal-overlay" (click)="closeConfigModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-gear-fill modal-title-icon"></i>
+          <h3 class="modal-title">CẤU HÌNH CỔNG THANH TOÁN: {{ editingData.congTichHop }}</h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeConfigModal()">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-body">
+        <div class="modal-section">
+          <div class="section-heading">1. MÔI TRƯỜNG VẬN HÀNH</div>
+          <div class="radio-group">
+            <label class="custom-radio">
+              <input type="radio" name="moiTruong" value="Sandbox" [(ngModel)]="editingData.moiTruong" />
+              <span class="radio-mark"></span>
+              <span class="radio-label">Sandbox (Thử nghiệm)</span>
+            </label>
+
+            <label class="custom-radio">
+              <input type="radio" name="moiTruong" value="Production" [(ngModel)]="editingData.moiTruong" />
+              <span class="radio-mark"></span>
+              <span class="radio-label">Production (Thực tế)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <div class="section-heading">2. HIỂN THỊ KHI CHECKOUT</div>
+          
+          <div class="modal-form-group">
+            <label>Tên hiển thị<span class="required-star">*</span></label>
+            <input type="text" class="modal-input input-short" [(ngModel)]="editingData.tenHienThi" />
+          </div>
+
+          <div class="modal-form-group">
+            <label>Mô tả ngắn<span class="required-star">*</span></label>
+            <input type="text" class="modal-input input-long" [(ngModel)]="editingData.moTaNgan" />
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <div class="section-heading">3. CẤU HÌNH PHÍ GIAO DỊCH (TÙY CHỌN)</div>
+          
+          <label class="custom-checkbox">
+            <input type="checkbox" [(ngModel)]="editingData.tinhPhiCongThanhToan" (change)="onCheckboxChange()" />
+            <span class="checkbox-mark"></span>
+            <span class="checkbox-label">Tính phí cổng thanh toán cho khách hàng</span>
+          </label>
+
+          <div class="fee-inputs-row">
+            <div class="fee-item">
+              <span>Mức phí (%):</span>
+              <input type="number" class="modal-input fee-input-small" [(ngModel)]="editingData.mucPhiPhanTram" (input)="onFeeInput()" [disabled]="!editingData.tinhPhiCongThanhToan" placeholder="0" />
+              <span>%</span>
+            </div>
+
+            <div class="fee-item">
+              <span>Phí cố định:</span>
+              <input type="number" class="modal-input fee-input-medium" [(ngModel)]="editingData.phiCoDinh" (input)="onFeeInput()" [disabled]="!editingData.tinhPhiCongThanhToan" placeholder="0" />
+              <span>VNĐ</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="modal-security-note">
+          <strong>Lưu ý bảo mật:</strong> Thông tin API Key, Merchant ID và Secret Key được lưu an toàn trong file cấu hình .env phía Backend.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-delete" (click)="xoaPhuongThuc()">Xóa</button>
+        <button type="button" class="btn-modal-save" (click)="saveModalConfig()">Lưu cấu hình</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- POPUP 2: THÊM PHƯƠNG THỨC THANH TOÁN MỚI -->
+@if (showAddModal) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal-container modal-add-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-plus-lg modal-add-icon"></i>
+          <h3 class="modal-title">THÊM PHƯƠNG THỨC THANH TOÁN MỚI</h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeAddModal()">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="bold-label">Chọn cổng thanh toán tích hợp sẵn:</label>
+          <div class="select-wrapper">
+            <i class="bi bi-credit-card select-icon"></i>
+            <select class="modal-input select-input" [(ngModel)]="newMethodData.congTichHop">
+              @for (gate of danhSachCongTichHop; track gate.code) {
+                <option [value]="gate.code">{{ gate.label }}</option>
+              }
+            </select>
+            <i class="bi bi-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="bold-label">Tên phương thức hiển thị (khi khách thanh toán)<span class="required-star">*</span>:</label>
+          <input type="text" class="modal-input input-medium-long" [(ngModel)]="newMethodData.tenHienThi" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="bold-label">Mô tả ngắn<span class="required-star">*</span>:</label>
+          <input type="text" class="modal-input input-extra-long" [(ngModel)]="newMethodData.moTaNgan" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="bold-label">Tải lên Logo đại diện:</label>
+          <div class="logo-upload-preview-row">
+            <div class="add-logo-preview-box">
+              <img [src]="newMethodData.logo" alt="Logo Preview" (error)="$event.target.src='assets/images/logo.png'" />
+            </div>
+            
+            <div class="upload-btn-column">
+              <label class="btn-upload-file">
+                <i class="bi bi-box-arrow-up"></i> Tải lên tệp mới
+                <input type="file" (change)="onAddLogoSelected($event)" accept="image/png, image/svg+xml" hidden />
+              </label>
+              <span class="file-note-text">Dạng file: PNG, SVG (Tối đa 2MB)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="bold-label">Trạng thái kích hoạt:</label>
+          <div class="radio-group">
+            <label class="custom-radio">
+              <input type="radio" name="addTrangThai" [value]="true" [(ngModel)]="newMethodData.trangThaiKichHoat" />
+              <span class="radio-mark"></span>
+              <span class="radio-label">Kích hoạt ngay</span>
+            </label>
+
+            <label class="custom-radio">
+              <input type="radio" name="addTrangThai" [value]="false" [(ngModel)]="newMethodData.trangThaiKichHoat" />
+              <span class="radio-mark"></span>
+              <span class="radio-label">Lưu nháp (Tắt)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closeAddModal()">Hủy</button>
+        <button type="button" class="btn-modal-save btn-modal-add" (click)="addNewMethod()">Thêm phương thức</button>
+      </div>
+
+    </div>
+  </div>
+}

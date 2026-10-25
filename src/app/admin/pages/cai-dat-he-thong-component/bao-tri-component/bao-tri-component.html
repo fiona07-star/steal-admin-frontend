@@ -1,0 +1,77 @@
+<div class="maintenance-tab-container">
+  
+  <!-- PHẦN 1: TRẠNG THÁI BẢO TRÌ & CÔNG TẮC BẬT/TẮT -->
+  <div class="maintenance-section">
+    <h3 class="section-title">Trạng thái bảo trì</h3>
+
+    <div class="toggle-row">
+      <div class="custom-switch" [class.checked]="maintenanceData.batBaoTri" (click)="toggleBaoTri()">
+        <div class="switch-handle"></div>
+      </div>
+
+      <div class="toggle-labels">
+        <span class="toggle-title">Bật chế độ bảo trì</span>
+        <span class="toggle-desc">Khi bật, khách hàng không thể truy cập website</span>
+        <span class="toggle-desc">Chỉ Admin vẫn có thể đăng nhập và sử dụng hệ thống.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHẦN 2: THÔNG BÁO HIỂN THỊ CHO KHÁCH HÀNG -->
+  <div class="maintenance-section">
+    <label class="input-label">Thông báo hiển thị cho khách hàng<span class="required-star">*</span></label>
+    <textarea 
+      class="maintenance-textarea" 
+      rows="4" 
+      [(ngModel)]="maintenanceData.thongBaoKhachHang"
+      placeholder="Nhập nội dung thông báo cho khách hàng khi truy cập lúc bảo trì..."
+    ></textarea>
+  </div>
+
+  <!-- PHẦN 3: THỜI GIAN BẮT ĐẦU VÀ KẾT THÚC DỰ KIẾN (DÀN ĐỀU 2 BÊN) -->
+  <div class="time-range-row">
+    <div class="time-input-group">
+      <label class="input-label">Thời gian bắt đầu (dự kiến)</label>
+      <div class="datetime-input-wrapper">
+        <i class="bi bi-calendar-week calendar-icon"></i>
+        <input 
+          type="datetime-local" 
+          class="datetime-input" 
+          [(ngModel)]="maintenanceData.thoiGianBatDau" 
+        />
+      </div>
+    </div>
+
+    <div class="time-input-group">
+      <label class="input-label">Thời gian kết thúc (dự kiến)</label>
+      <div class="datetime-input-wrapper">
+        <i class="bi bi-calendar-week calendar-icon"></i>
+        <input 
+          type="datetime-local" 
+          class="datetime-input" 
+          [(ngModel)]="maintenanceData.thoiGianKetThuc" 
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- PHẦN 4: KHUNG LƯU Ý CHẾ ĐỘ BẢO TRÌ -->
+  <div class="maintenance-warning-box">
+    <h4 class="warning-title">Lưu ý khi sử dụng chế độ bảo trì</h4>
+    <ul class="warning-list">
+      <li>Khi bật bảo trì, khách hàng sẽ được chuyển đến trang thông báo bảo trì và tạm thời không thể sử dụng các chức năng của Store.</li>
+      <li>Admin vẫn có thể đăng nhập và sử dụng khu vực quản trị để cấu hình, kiểm tra và cập nhật hệ thống.</li>
+      <li>Kiểm tra kỹ nội dung thông báo và thời gian dự kiến hoàn tất trước khi lưu thay đổi.</li>
+      <li>Chế độ bảo trì chỉ có hiệu lực sau khi lưu cấu hình thành công.</li>
+      <li>Sau khi hoàn tất nâng cấp, hãy tắt chế độ bảo trì để khách hàng có thể truy cập website bình thường.</li>
+    </ul>
+  </div>
+
+  <!-- PHẦN 5: NÚT LƯU THAY ĐỔI -->
+  <div class="save-btn-row">
+    <button type="button" class="btn-save-maintenance" (click)="saveConfig()">
+      <i class="bi bi-folder-fill btn-icon"></i> Lưu thay đổi
+    </button>
+  </div>
+
+</div>

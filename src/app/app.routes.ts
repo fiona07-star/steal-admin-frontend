@@ -1,41 +1,41 @@
 import { Routes } from '@angular/router';
 
 // LAYOUT & GUARD
-import { AdminLayoutComponent} from './admin/admin-layout-component/admin-layout-component';
+import { AdminLayoutComponent } from './admin/admin-layout-component/admin-layout-component';
+import { quanTriGuard } from './guards/quan-tri-guard';
 
 // PAGES
 import { QuanLyNguoiDungComponent } from './admin/pages/quan-ly-nguoi-dung-component/quan-ly-nguoi-dung-component';
 import { ChiTietNguoiDungComponent } from './admin/pages/quan-ly-nguoi-dung-component/chi-tiet-nguoi-dung-component/chi-tiet-nguoi-dung-component';
 import { QuanLyDanhGiaComponent } from './admin/pages/quan-ly-danh-gia-component/quan-ly-danh-gia-component';
-import { CaiDatHeThongComponent} from './admin/pages/cai-dat-he-thong-component/cai-dat-he-thong-component';
-import { quanTriGuard } from './guards/quan-tri-guard';
+import { CaiDatHeThongComponent } from './admin/pages/cai-dat-he-thong-component/cai-dat-he-thong-component';
 import { QuanLyTroChoiComponent } from './admin/pages/san-pham/quan-ly-tro-choi-component/quan-ly-tro-choi-component';
-import{QuanLyDanhMucComponent} from './admin/pages/san-pham/quan-ly-danh-muc-component/quan-ly-danh-muc-component';
+import { QuanLyDanhMucComponent } from './admin/pages/san-pham/quan-ly-danh-muc-component/quan-ly-danh-muc-component';
 import { ChiTietDanhMucComponent } from './admin/pages/san-pham/quan-ly-danh-muc-component/chi-tiet-danh-muc-component/chi-tiet-danh-muc-component';
-import{ThongKeDoanhThuComponent} from './admin/pages/thong-ke-doanh-thu-component/thong-ke-doanh-thu-component';
-import{ChiTietTroChoiComponent} from './admin/pages/san-pham/chi-tiet-tro-choi-component/chi-tiet-tro-choi-component';
-import{QuanLyKhuyenMaiComponent} from './admin/pages/san-pham/quan-ly-khuyen-mai-component/quan-ly-khuyen-mai-component';
-import{ChiTietKhuyenMaiComponent} from './admin/pages/san-pham/quan-ly-khuyen-mai-component/chi-tiet-khuyen-mai-component/chi-tiet-khuyen-mai-component';
+import { ThongKeDoanhThuComponent } from './admin/pages/thong-ke-doanh-thu-component/thong-ke-doanh-thu-component';
+import { ChiTietTroChoiComponent } from './admin/pages/san-pham/chi-tiet-tro-choi-component/chi-tiet-tro-choi-component';
+import { QuanLyKhuyenMaiComponent } from './admin/pages/san-pham/quan-ly-khuyen-mai-component/quan-ly-khuyen-mai-component';
+import { ChiTietKhuyenMaiComponent } from './admin/pages/san-pham/quan-ly-khuyen-mai-component/chi-tiet-khuyen-mai-component/chi-tiet-khuyen-mai-component';
 import { TongQuanAdminComponent } from './admin/pages/tong-quan-admin-component/tong-quan-admin-component';
 import { QuanLyDonHangComponent } from './admin/pages/quan-ly-don-hang-component/quan-ly-don-hang-component';
 import { ChiTietDonHangComponent } from './admin/pages/quan-ly-don-hang-component/chi-tiet-don-hang-component/chi-tiet-don-hang-component';
 import { DangNhapAdminComponent } from './admin/pages/dang-nhap-admin-component/dang-nhap-admin-component';
 
 export const routes: Routes = [
-  // Trang mặc định
+  // 1. Mở web mặc định -> Ép chuyển hướng sang trang đăng nhập trước
   {
     path: '',
     redirectTo: 'admin/login',
     pathMatch: 'full'
   },
 
-  // Trang đăng nhập: không đặt Guard ở đây
+  // 2. Trang Đăng nhập (Công khai)
   {
     path: 'admin/login',
     component: DangNhapAdminComponent
   },
 
-  // Khu vực quản trị: cần đăng nhập
+  // 3. Khu vực Quản trị (Cần đăng nhập qua Guard)
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -105,12 +105,9 @@ export const routes: Routes = [
     ]
   },
 
-  // URL không tồn tại
+  // 4. Đường dẫn không hợp lệ -> Đưa về trang Đăng nhập
   {
     path: '**',
     redirectTo: 'admin/login'
   }
 ];
-
-
-

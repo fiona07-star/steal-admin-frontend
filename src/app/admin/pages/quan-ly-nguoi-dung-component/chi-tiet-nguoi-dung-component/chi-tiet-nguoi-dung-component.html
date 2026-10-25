@@ -1,1 +1,320 @@
-<p>chi-tiet-nguoi-dung-component works!</p>
+<div class="customer-detail-page" *ngIf="khachHang">
+  <!-- 1. NÚT QUAY LẠI -->
+  <button type="button" class="back-btn" (click)="quayLai()">
+    <i class="bi bi-arrow-left"></i>
+    <span>Quay lại</span>
+  </button>
+
+  <!-- 2. KHUNG 2 THẺ PROFILE (CÁ NHÂN & TRẠNG THÁI) -->
+  <div class="profile-cards">
+    <!-- Card 1: Thông tin cá nhân -->
+    <div class="info-card">
+      <div class="avatar-circle">
+        <span>{{ khachHang.hoTen ? khachHang.hoTen.charAt(0) : 'U' }}</span>
+      </div>
+      <div class="info-details">
+        <p class="info-row"><strong>ID:</strong> {{ khachHang.maTaiKhoanNguoiDung || khachHang.id }}</p>
+        <p class="info-row name-row">
+          <strong>{{ khachHang.hoTen }}</strong> ({{ khachHang.tenTaiKhoanNguoiDung || khachHang.username }})
+        </p>
+        <p class="info-row"><strong>Tham gia:</strong> {{ khachHang.ngayDangKy || khachHang.thamGia }}</p>
+        <p class="info-row"><strong>Email:</strong> {{ khachHang.email }}</p>
+        <p class="info-row"><strong>SĐT:</strong> {{ khachHang.soDienThoai || khachHang.sdt }}</p>
+      </div>
+    </div>
+
+    <!-- Card 2: Trạng thái tài khoản -->
+    <div class="status-card" [class.card-is-locked]="khachHang.trangThaiKhoa">
+      <h2>TRẠNG THÁI TÀI KHOẢN</h2>
+      
+      <div class="status-indicator">
+        <span class="status-dot" [class.dot-locked]="khachHang.trangThaiKhoa"></span>
+        <span class="status-text" [class.text-locked]="khachHang.trangThaiKhoa">
+          {{ khachHang.trangThaiKhoa ? 'Đã khóa' : 'Đang hoạt động' }}
+        </span>
+      </div>
+
+      <div class="locked-info-details" *ngIf="khachHang.trangThaiKhoa">
+        <p class="lock-detail-line">
+          <strong>Lý do:</strong> {{ khachHang.lyDoKhoa || 'Vi phạm chính sách' }}
+        </p>
+        <p class="lock-detail-line">
+          <strong>Ngày khóa:</strong> {{ khachHang.ngayKhoa || '03/10/2026' }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="lock-btn"
+        [class.unlock-btn]="khachHang.trangThaiKhoa"
+        (click)="xuLyBamNutKhoaTaiKhoan()"
+      >
+        <i class="bi" [class.bi-lock-fill]="!khachHang.trangThaiKhoa" [class.bi-unlock-fill]="khachHang.trangThaiKhoa"></i>
+        <span>{{ khachHang.trangThaiKhoa ? 'Mở khóa tài khoản' : 'Khóa tài khoản' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. GRID 4 Ô THỐNG KÊ -->
+  <div class="stats-grid">
+    <div class="stat-box">
+      <span class="stat-value">{{ tongDonHang }}</span>
+      <span class="stat-label">Tổng đơn hàng</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-value">{{ dinhDangTien(tongChiTieu) }}</span>
+      <span class="stat-label">Tổng chi tiêu</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-value">{{ gameSoHuu }}</span>
+      <span class="stat-label">Game sở hữu</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-value" [class.has-locked]="khachHang.soNgayDaKhoa > 0">{{ khachHang.soNgayDaKhoa }}</span>
+      <span class="stat-label">Số ngày đã khóa</span>
+    </div>
+  </div>
+
+  <!-- 4. THANH TAB CHUYỂN ĐỔI (TRÀN TOÀN BỘ 100% CHIỀU RỘNG) -->
+  <div class="tabs-bar">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="tabHienTai === 'lich-su'"
+      (click)="chuyenTab('lich-su')"
+    >
+      <i class="bi bi-clock-history"></i>
+      <span>LỊCH SỬ ĐƠN HÀNG</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="tabHienTai === 'thu-vien'"
+      (click)="chuyenTab('thu-vien')"
+    >
+      <i class="bi bi-controller"></i>
+      <span>THƯ VIỆN GAME</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="tabHienTai === 'danh-gia'"
+      (click)="chuyenTab('danh-gia')"
+    >
+      <i class="bi bi-star"></i>
+      <span>ĐÁNH GIÁ & HOÀN TIỀN</span>
+    </button>
+  </div>
+
+  <!-- 5. KHO NỘI DUNG TƯƠNG ỨNG MỖI TAB -->
+  <!-- TAB 1: LỊCH SỬ ĐƠN HÀNG -->
+  <div class="tab-content" *ngIf="tabHienTai === 'lich-su'">
+    <div class="detail-table-scroll">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th style="width: 6%;">STT</th>
+            <th style="width: 14%;">Mã đơn</th>
+            <th style="width: 12%;">Ngày</th>
+            <th style="width: 26%;">Game</th>
+            <th style="width: 14%;">Tổng tiền</th>
+            <th style="width: 16%;">Phương thức thanh toán</th>
+            <th style="width: 12%;">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of khachHang.danhSachDonHang; let i = index">
+            <td class="text-center">{{ order.stt || (i + 1) }}</td>
+            <td class="text-center">{{ order.maDonHang || order.maDon }}</td>
+            <td class="text-center">{{ order.ngayTao || order.ngay }}</td>
+            <td class="text-center">{{ order.danhsachGame || order.game }}</td>
+            <td class="text-center">{{ dinhDangTien(order.tongTien) }}</td>
+            <td class="text-center">{{ order.phuongThucThanhToan || order.phuongThuc }}</td>
+            <td class="text-center">
+              <span
+                class="order-status"
+                [class.status-success]="order.trangThaiDonHang === 'thanh_cong' || order.trangThai === 'Thành công'"
+                [class.status-canceled]="order.trangThaiDonHang === 'da_huy' || order.trangThai === 'Đã hủy'"
+                [class.status-refunded]="order.trangThaiDonHang === 'hoan_tien' || order.trangThai === 'Đã hoàn tiền'"
+              >
+                {{ formatTrangThaiDonHang(order) }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 2: THƯ VIỆN GAME -->
+  <div class="tab-content game-library-container" *ngIf="tabHienTai === 'thu-vien'">
+    <div class="game-grid-scroll" *ngIf="danhSachGameThuVien.length > 0">
+      <div class="game-grid">
+        <div class="game-card" *ngFor="let game of danhSachGameThuVien">
+          <div class="game-card-inner">
+            <img [src]="game.anhGame" [alt]="game.tenGame" class="game-cover" />
+            <p class="game-title" [title]="game.tenGame">{{ game.tenGame }}</p>
+            <p class="game-date">Mua: {{ game.ngayMua }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: ĐÁNH GIÁ & HOÀN TIỀN -->
+  <div class="tab-content review-refund-container" *ngIf="tabHienTai === 'danh-gia'">
+    <div class="review-refund-scroll">
+      
+      <!-- PHẦN 1: DANH SÁCH ĐÁNH GIÁ -->
+      <div class="section-block">
+        <h3 class="section-title">DANH SÁCH ĐÁNH GIÁ</h3>
+
+        <div class="review-cards-wrapper">
+        <div class="review-cards-row" #reviewRow>
+          <div class="review-card" *ngFor="let item of danhSachReviews">
+            <div class="review-card-top">
+              <img [src]="item.anhGame || item.anhDaiDien" [alt]="item.tenGame" class="review-game-img" />
+              <div class="review-info">
+                <h4 class="review-game-name">{{ item.tenGame }}</h4>
+                <p class="review-date">Đánh giá ngày: {{ item.ngayDanhGia }}</p>
+
+                <span class="recommend-tag tag-green" *ngIf="item.trangThai === 'hien_thi'">
+                  Khuyên dùng
+                </span>
+
+                <span class="recommend-tag tag-red" *ngIf="item.trangThai === 'an'">
+                  Không khuyên dùng
+                </span>
+              </div>
+            </div>
+
+            <p class="review-body">{{ item.noiDung }}</p>
+
+            <div class="review-actions">
+              <button
+                type="button"
+                class="toggle-review-btn"
+                [class.show-btn]="item.trangThai === 'an'"
+                (click)="toggleHienThiDanhGia(item)"
+              >
+                {{ item.trangThai === 'hien_thi' ? 'Ẩn đánh giá' : 'Hiển thị' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nút mũi tên chuyển hướng nằm ngoài hàng thẻ -->
+        <button type="button" class="scroll-next-btn" (click)="cuonNgangSangPhai(reviewRow)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- PHẦN 2: DANH SÁCH YÊU CẦU HOÀN TIỀN -->
+      <div class="section-block" style="margin-top: 28px;">
+        <h3 class="section-title">DANH SÁCH YÊU CẦU HOÀN TIỀN</h3>
+
+        <div class="refund-table-wrapper">
+          <table class="refund-table">
+            <thead>
+              <tr>
+                <th style="width: 16%;">Mã đơn</th>
+                <th style="width: 18%;">Game</th>
+                <th style="width: 30%;">Lý do hoàn tiền</th>
+                <th style="width: 12%;">Trạng thái</th>
+                <th style="width: 12%;">Ngày yêu cầu</th>
+                <th style="width: 12%;">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rf of danhSachRefundRequests">
+                <td class="text-center">{{ rf.maDonHang }}</td>
+                <td class="text-center">{{ rf.tenGame }}</td>
+                <td class="text-center text-ellipsis" [title]="rf.lyDoKhachHang">{{ rf.lyDoKhachHang }}</td>
+                <td class="text-center">
+                  <span 
+                    class="status-refund-tag"
+                    [class.status-waiting]="rf.trangThaiDonHang === 'cho_xu_ly'"
+                    [class.status-approved]="rf.trangThaiDonHang === 'hoan_tien'"
+                    [class.status-rejected]="rf.trangThaiDonHang === 'tu_choi'"
+                  >
+                    {{ formatTrangThaiHoanTien(rf.trangThaiDonHang) }}
+                  </span>
+                </td>
+                <td class="text-center">{{ rf.ngayYeuCau }}</td>
+                <td class="text-center">
+                  <button type="button" class="detail-action-btn" (click)="moModalChiTietHoanTien(rf)">
+                    Xem chi tiết
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="table-bottom-spacer"></div>
+</div>
+
+<!-- ================= MODAL CHI TIẾT HOÀN TIỀN ================= -->
+<div class="refund-modal-backdrop" *ngIf="hienModalHoanTien" (click)="dongModalHoanTien()">
+  <div class="refund-modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">CHI TIẾT YÊU CẦU HOÀN TIỀN #{{ thongTinHoanTienChon?.maDonHang }}</h3>
+      <div class="modal-header-right">
+        <span class="status-badge-orange">
+          <i class="bi bi-circle-fill dot-orange"></i>
+          {{ formatTrangThaiHoanTien(thongTinHoanTienChon?.trangThaiDonHang) }}
+        </span>
+        <button type="button" class="close-x-btn" (click)="dongModalHoanTien()"><i class="bi bi-x"></i></button>
+      </div>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-body" *ngIf="thongTinHoanTienChon">
+      <p class="info-line"><i class="bi bi-person-fill icon-purple"></i><strong>KHÁCH HÀNG:</strong> {{ khachHang?.hoTen }} <em>({{ khachHang?.tenTaiKhoanNguoiDung || khachHang?.username }})</em></p>
+      <p class="info-line"><i class="bi bi-controller icon-purple"></i><strong>GAME:</strong> {{ thongTinHoanTienChon.tenGame }} — <strong>Số tiền hoàn:</strong> {{ dinhDangTien(499500) }}</p>
+      <p class="info-line"><i class="bi bi-calendar-week-fill icon-blue"></i><strong>NGÀY GỬI:</strong> {{ thongTinHoanTienChon.ngayYeuCau }} 09:00</p>
+      <p class="info-line"><i class="bi bi-pencil-square icon-yellow"></i><strong>LÝ DO TỪ KHÁCH HÀNG:</strong></p>
+      <div class="reason-quote">"{{ thongTinHoanTienChon.lyDoKhachHang }}"</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL KHÓA TÀI KHOẢN ================= -->
+<div class="lock-modal-backdrop" *ngIf="hienModalKhoa" (click)="dongModalKhoa()">
+  <div class="lock-modal-box" (click)="$event.stopPropagation()">
+    <h3 class="lock-modal-title">KHÓA TÀI KHOẢN NGƯỜI DÙNG</h3>
+    <div class="lock-modal-divider"></div>
+    <div class="user-info-row">
+      <div class="user-avatar-circle"><span>{{ khachHang?.hoTen ? khachHang.hoTen.charAt(0) : 'U' }}</span></div>
+      <div class="user-text-info">
+        <p class="account-name-line">Tài khoản: <strong>{{ khachHang?.hoTen }}</strong> ({{ khachHang?.tenTaiKhoanNguoiDung || khachHang?.username }})</p>
+        <p class="join-date-line">Tham gia: {{ khachHang?.ngayDangKy || khachHang?.thamGia }}</p>
+      </div>
+    </div>
+    <p class="warning-alert-text">⚠️ CẢNH BÁO: Tài khoản sau khi bị khóa sẽ không thể đăng nhập, mua game, gửi đánh giá hoặc thực hiện giao dịch trên hệ thống.</p>
+    <div class="reason-input-group">
+      <label class="input-label-bold">Lý do khóa tài khoản:</label>
+      <div class="textarea-wrapper">
+        <textarea class="reason-textarea" rows="3" maxlength="300" placeholder="Nhập lý do chi tiết..." [(ngModel)]="lyDoKhoaInput"></textarea>
+        <span class="char-count">{{ lyDoKhoaInput.length }}/300</span>
+      </div>
+    </div>
+    <div class="sample-reasons-group">
+      <label class="sample-label-bold">Chọn lý do mẫu:</label>
+      <div class="sample-buttons-row">
+        <button type="button" class="sample-btn" (click)="chonLyDoMau('Gian lận nạp tiền')">Gian lận nạp tiền</button>
+        <button type="button" class="sample-btn" (click)="chonLyDoMau('Spam/Vi phạm chính sách')">Spam/Vi phạm chính sách</button>
+        <button type="button" class="sample-btn" (click)="chonLyDoMau('Tài khoản giả mạo')">Tài khoản giả mạo</button>
+      </div>
+    </div>
+    <div class="modal-footer-actions">
+      <button type="button" class="cancel-modal-btn" (click)="dongModalKhoa()">Hủy</button>
+      <button type="button" class="confirm-lock-btn" (click)="xacNhanKhoaTaiKhoan()">Xác nhận Khóa tài khoản</button>
+    </div>
+  </div>
+</div>

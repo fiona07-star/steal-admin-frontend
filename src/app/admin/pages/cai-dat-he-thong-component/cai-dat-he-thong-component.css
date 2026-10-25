@@ -1,0 +1,155 @@
+/* ==========================================
+   1. CONTAINER TỔNG THỂ & BẬT THANH CUỘN (SCROLL)
+   ========================================== */
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+.system-config-container {
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 100px); /* Khống chế chiều cao màn hình */
+  overflow-y: scroll !important;    /* Ép buộc hiển thị thanh cuộn dọc */
+  padding: 16px 20px 40px 16px;   
+  color: #ffffff;
+  font-family: 'Comme', 'Commissioner', sans-serif;
+  box-sizing: border-box;
+}
+
+/* Custom dáng thanh cuộn Webkit cho đồng bộ */
+.system-config-container::-webkit-scrollbar {
+  width: 6px !important;
+  display: block !important;
+}
+
+.system-config-container::-webkit-scrollbar-track {
+  background: rgba(27, 34, 64, 0.6);
+  border-radius: 4px;
+}
+
+.system-config-container::-webkit-scrollbar-thumb {
+  background: #50587c;
+  border-radius: 4px;
+}
+
+.system-config-container::-webkit-scrollbar-thumb:hover {
+  background: #6c57a3;
+}
+
+/* ==========================================
+   2. TIÊU ĐỀ TRANG CẤU HÌNH
+   ========================================== */
+.page-title {
+  font-family: 'Comme', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 28px;
+  color: #eae4ee;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* ==========================================
+   3. THANH 7 TAB NAVIGATION (CĂN GIỮA & CĂN ĐỀU)
+   ========================================== */
+.config-tabs-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.config-tab-card {
+  flex: 1;
+  max-width: 145px;
+  height: 90px;
+  background: rgba(217, 217, 217, 0.1);
+  border: 2px solid #7d7d8d;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 8px 6px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.config-tab-card:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.config-tab-card.active {
+  background: #ffffff !important;
+  border: 2px solid #50407a !important;
+}
+
+.tab-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.globe-icon   { color: #609cef; }
+.card-icon    { color: #ebc849; }
+.tools-icon   { color: #acabaf; }
+.people-icon  { color: #6c57a3; }
+.bell-icon    { color: #ebc849; }
+.policy-icon  { color: #ffffff; }
+.invoice-icon { color: #e57a7a; }
+
+.config-tab-card.active .tab-icon {
+  color: #6c57a3 !important;
+}
+
+.tab-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.config-tab-card.active .tab-label {
+  color: #6c57a3 !important;
+  font-weight: 700;
+}
+
+/* ==========================================
+   4. ĐƯỜNG KẺ PHÂN CÁCH & PLACEHOLDER
+   ========================================== */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: #7d7d8d;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin: 14px 0 20px 0;
+}
+
+.placeholder-content {
+  padding: 60px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.placeholder-box {
+  text-align: center;
+  color: #7d7d8d;
+}
+
+.placeholder-box i {
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: block;
+}

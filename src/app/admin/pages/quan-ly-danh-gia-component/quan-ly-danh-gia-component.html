@@ -1,1 +1,276 @@
-<p>quan-ly-danh-gia-component works!</p>
+<div class="reviews-page">
+  <h1 class="page-title">ĐÁNH GIÁ KHÁCH HÀNG</h1>
+
+  <!-- 1. KHUNG THỐNG KÊ ĐÃ BINDING CON SỐ ĐỘNG FROM TS -->
+  <div class="stats-container">
+    <div class="stats-row top-row">
+      <div class="stat-card card-total">
+        <div class="card-header">
+          <i class="bi bi-chat-dots-fill icon-stat"></i>
+          <span class="stat-title">Tổng đánh giá</span>
+        </div>
+        <div class="stat-value">{{ tongDanhGia }}</div>
+      </div>
+
+      <div class="stat-card card-rate">
+        <div class="card-header">
+          <i class="bi bi-hand-thumbs-up-fill icon-stat"></i>
+          <span class="stat-title">Tỷ lệ Khuyên dùng</span>
+        </div>
+        <div class="stat-value">{{ tyLeKhuyenDung }}%</div>
+      </div>
+
+      <div class="stat-card card-visible">
+        <div class="card-header">
+          <i class="bi bi-eye-fill icon-stat"></i>
+          <span class="stat-title">Đang hiển thị</span>
+        </div>
+        <div class="stat-value">{{ soHienThi }}</div>
+      </div>
+
+      <div class="stat-card card-hidden">
+        <div class="card-header">
+          <i class="bi bi-eye-slash-fill icon-stat"></i>
+          <span class="stat-title">Đã ẩn</span>
+        </div>
+        <div class="stat-value">{{ soDaAn }}</div>
+      </div>
+    </div>
+
+    <div class="stats-row bottom-row">
+      <div class="stat-card card-recommend">
+        <div class="card-header">
+          <i class="bi bi-emoji-laughing-fill icon-stat"></i>
+          <span class="stat-title">Khuyên dùng</span>
+        </div>
+        <div class="stat-value">{{ soKhuyenDung }}</div>
+      </div>
+
+      <div class="stat-card card-not-recommend">
+        <div class="card-header">
+          <i class="bi bi-emoji-frown-fill icon-stat"></i>
+          <span class="stat-title">Không Khuyên dùng</span>
+        </div>
+        <div class="stat-value">{{ soKhongKhuyenDung }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BỘ LỌC VÀ BẢNG DANH SÁCH GIỮ NGUYÊN -->
+  <div class="filter-section-single-row">
+    <div class="search-box">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Tìm theo tên Game, Username, nội dung đánh giá..."
+        [(ngModel)]="tuKhoa"
+        (input)="locDanhSach()"
+      />
+    </div>
+
+    <div class="select-filters-group">
+      <div class="custom-dropdown dropdown-game" [class.is-active]="isGameOpen" (click)="$event.stopPropagation()">
+        <button type="button" class="dropdown-btn" (click)="toggleDropdown('game', $event)">
+          <span>{{ boLocGame || 'Game' }}</span>
+          <i class="bi bi-chevron-down select-icon"></i>
+        </button>
+
+        <div class="dropdown-menu menu-game" *ngIf="isGameOpen">
+          <div class="inner-search-wrapper">
+            <div class="inner-search-box">
+              <i class="bi bi-search inner-search-icon"></i>
+              <input 
+                type="text" 
+                class="inner-search-input" 
+                placeholder="Tìm kiếm game" 
+                [(ngModel)]="tuKhoaTimGame"
+              />
+            </div>
+          </div>
+
+          <div class="dropdown-list-scroll">
+            <div class="dropdown-item" (click)="selectGame('')">Tất cả Game</div>
+            <div 
+              class="dropdown-item" 
+              *ngFor="let g of danhSachGameLoc" 
+              (click)="selectGame(g)"
+            >
+              {{ g }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="select-wrapper select-status">
+        <select [(ngModel)]="boLocTrangThai" (change)="locDanhSach()">
+          <option value="">Trạng thái</option>
+          <option value="hien_thi">Hiển thị</option>
+          <option value="da_an">Đã ẩn</option>
+        </select>
+        <i class="bi bi-chevron-down select-icon"></i>
+      </div>
+
+      <div class="select-wrapper select-sort">
+        <select [(ngModel)]="boLocSapXep" (change)="locDanhSach()">
+          <option value="moi_nhat">Sắp xếp</option>
+          <option value="moi_nhat">Mới nhất</option>
+          <option value="cu_nhat">Cũ nhất</option>
+        </select>
+        <i class="bi bi-chevron-down select-icon"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="reviews-table">
+      <thead>
+        <tr>
+          <th class="col-stt">#</th>
+          <th class="col-user">Khách hàng</th>
+          <th class="col-game">Game</th>
+          <th class="col-rating">Đánh giá</th>
+          <th class="col-content">Nội dung</th>
+          <th class="col-date">Ngày</th>
+          <th class="col-status">Trạng thái</th>
+          <th class="col-action">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of danhSachHienThi; let i = index">
+          <td class="col-stt">{{ i + 1 }}</td>
+          <td class="col-user">
+            <div class="user-cell">
+              <img [src]="item.anhDaiDien || 'assets/images/default-avatar.png'" class="user-avatar" alt="" />
+              <span class="user-name">{{ item.tenTaiKhoanNguoiDung }}</span>
+            </div>
+          </td>
+          <td class="col-game">
+            <div class="game-cell">
+              <img [src]="item.anhGame" class="game-img" alt="" />
+              <span class="game-title">{{ item.tenGame }}</span>
+            </div>
+          </td>
+          <td class="col-rating">
+            <span
+              class="pill-tag"
+              [class.pill-recommend]="item.danhGia === 'khuyen_dung'"
+              [class.pill-not-recommend]="item.danhGia === 'khong_khuyen_dung'"
+            >
+              {{ item.danhGia === 'khuyen_dung' ? 'Khuyên dùng' : 'Không Khuyên dùng' }}
+            </span>
+          </td>
+          <td class="col-content text-ellipsis" [title]="item.noiDung">{{ item.noiDung }}</td>
+          <td class="col-date">{{ item.ngayDanhGia }}</td>
+          <td class="col-status">
+            <span
+              class="status-text"
+              [class.status-visible]="item.trangThai === 'hien_thi'"
+              [class.status-hidden]="item.trangThai === 'an' || item.trangThai === 'da_an'"
+            >
+              {{ item.trangThai === 'hien_thi' ? 'Hiển thị' : 'Đã ẩn' }}
+            </span>
+          </td>
+          <td class="col-action">
+          <button type="button" class="action-btn" (click)="openModal(item)">
+            [Xem]
+          </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- MODAL CHI TIẾT ĐÁNH GIÁ -->
+<div class="review-modal-overlay" *ngIf="selectedReview" (click)="closeModal()">
+  <div class="review-modal-card" (click)="$event.stopPropagation()">
+    
+    <!-- HEADER MODAL -->
+    <div class="modal-header">
+      <h3 class="modal-title">CHI TIẾT ĐÁNH GIÁ</h3>
+      
+      <div class="modal-header-actions">
+        <!-- Tag Trạng thái -->
+        <span class="status-pill" [class.pill-visible]="selectedReview.trangThai === 'hien_thi'" [class.pill-hidden]="selectedReview.trangThai === 'an' || selectedReview.trangThai === 'da_an'">
+          <span class="dot"></span>
+          {{ selectedReview.trangThai === 'hien_thi' ? 'Hiển thị' : 'Đã ẩn' }}
+        </span>
+
+        <!-- Nút Đóng [X] -->
+        <button type="button" class="close-btn" (click)="closeModal()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <!-- KHUNG THÔNG TIN TÀI KHOẢN -->
+    <div class="info-box user-info-box">
+      <img [src]="selectedReview.anhDaiDien || 'assets/images/user1.png'" class="box-avatar" alt="User Avatar" />
+      <div class="box-details">
+        <div><strong>ID:</strong> {{ selectedReview.maTaiKhoanNguoiDung }}</div>
+        <div><strong>Tài khoản:</strong> {{ selectedReview.tenTaiKhoanNguoiDung }}</div>
+        <div><strong>Tham gia:</strong> {{ '02/08/2026' }}</div>
+      </div>
+    </div>
+
+    <!-- KHUNG THÔNG TIN GAME -->
+    <div class="info-box game-info-box">
+      <img [src]="selectedReview.anhGame || 'assets/images/stray.png'" class="box-game-img" alt="Game Banner" />
+      <div class="box-details">
+        <div><strong>Game:</strong> {{ selectedReview.tenGame }}</div>
+        <div><strong>Mua:</strong> {{ '12/09/2026' }}</div>
+      </div>
+    </div>
+
+    <!-- DÒNG ĐÁNH GIÁ (KHUYÊN DÙNG / KHÔNG KHUYÊN DÙNG) -->
+    <div class="rating-row-box" 
+         [class.is-recommend]="selectedReview.danhGia === 'khuyen_dung'" 
+         [class.is-not-recommend]="selectedReview.danhGia !== 'khuyen_dung'">
+      <div class="rating-label">
+        <i class="bi bi-tag-fill rating-icon"></i>
+        <span>Đánh giá:</span>
+      </div>
+      <span class="rating-badge" 
+            [class.badge-recommend]="selectedReview.danhGia === 'khuyen_dung'" 
+            [class.badge-not-recommend]="selectedReview.danhGia !== 'khuyen_dung'">
+        <i class="bi" 
+           [class.bi-hand-thumbs-up-fill]="selectedReview.danhGia === 'khuyen_dung'" 
+           [class.bi-hand-thumbs-down-fill]="selectedReview.danhGia !== 'khuyen_dung'"></i>
+        {{ selectedReview.danhGia === 'khuyen_dung' ? 'Khuyên dùng' : 'Không khuyên dùng' }}
+      </span>
+    </div>
+
+    <!-- NGÀY ĐĂNG -->
+    <div class="meta-item">
+      <i class="bi bi-calendar-event meta-icon"></i>
+      <span><strong>Ngày đăng:</strong> {{ selectedReview.ngayDanhGia }}</span>
+    </div>
+
+    <!-- NỘI DUNG ĐÁNH GIÁ -->
+    <div class="meta-item content-meta">
+      <i class="bi bi-pencil-square meta-icon"></i>
+      <span><strong>Nội dung:</strong></span>
+    </div>
+    
+    <div class="content-text-box">
+      {{ selectedReview.noiDung }}
+    </div>
+
+    <!-- NÚT ẨN / HIỆN ĐÁNH GIÁ -->
+    <div class="modal-footer">
+      <button type="button" 
+              class="btn-toggle-status" 
+              [class.btn-hide]="selectedReview.trangThai === 'hien_thi'" 
+              [class.btn-show]="selectedReview.trangThai !== 'hien_thi'" 
+              (click)="toggleReviewStatus(selectedReview)">
+        <i class="bi" 
+           [class.bi-eye-slash-fill]="selectedReview.trangThai === 'hien_thi'" 
+           [class.bi-eye-fill]="selectedReview.trangThai !== 'hien_thi'"></i>
+        <span>{{ selectedReview.trangThai === 'hien_thi' ? 'Ẩn đánh giá' : 'Hiện đánh giá' }}</span>
+      </button>
+    </div>
+
+  </div>
+</div>

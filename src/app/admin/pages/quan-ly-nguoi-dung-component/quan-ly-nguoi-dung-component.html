@@ -1,1 +1,172 @@
-<p>quan-ly-nguoi-dung-component works!</p>
+<div class="customer-page">
+  <!-- Tiêu đề trang & Nút làm mới -->
+  <div class="page-heading">
+    <div class="heading-info">
+      <h1>DANH SÁCH KHÁCH HÀNG</h1>
+      <p>
+        Tổng số khách hàng:
+        <strong>{{ tongTaiKhoan }}</strong>
+        <!-- Hiển thị lại số lượng khách hàng sau khi lọc -->
+        <span *ngIf="danhSachDaLoc.length !== tongTaiKhoan" class="filter-count">
+          (Đang hiển thị: <strong>{{ danhSachDaLoc.length }}</strong>)
+        </span>
+      </p>
+    </div>
+
+    <button
+      class="refresh-btn"
+      type="button"
+      (click)="lamMoi()"
+    >
+      <i class="bi bi-arrow-clockwise"></i>
+      <span>Làm mới</span>
+    </button>
+  </div>
+
+  <!-- Tìm kiếm tự động & Bộ lọc -->
+  <section class="filter-bar">
+    <label class="search-box">
+      <i class="bi bi-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="tuKhoa"
+        (ngModelChange)="locKhachHang()"
+        placeholder="Tìm theo tên, Username, Email..."
+      />
+
+      <button
+        *ngIf="tuKhoa"
+        class="clear-search"
+        type="button"
+        aria-label="Xóa từ khóa"
+        (click)="tuKhoa = ''; locKhachHang()"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </label>
+
+    <div class="select-wrapper">
+      <select
+        [(ngModel)]="trangThaiTam"
+        (change)="locKhachHang()"
+        aria-label="Lọc theo trạng thái"
+      >
+        <option value="">Trạng thái</option>
+        <option value="hoat-dong">Hoạt động</option>
+        <option value="da-khoa">Đã khóa</option>
+      </select>
+    </div>
+
+    <div class="select-wrapper">
+      <select
+        [(ngModel)]="chiTieuTam"
+        (change)="locKhachHang()"
+        aria-label="Lọc theo tổng chi tiêu"
+      >
+        <option value="">Tổng chi tiêu</option>
+        <option value="duoi-1m">&lt;1M</option>
+        <option value="1m-5m">1M–5M</option>
+        <option value="tren-5m">&gt;5M</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Bảng danh sách cuộn dọc độc lập -->
+  <section class="table-container">
+    <div class="table-scroll">
+      <table>
+        <colgroup>
+          <col style="width: 4%;" />   <!-- # -->
+          <col style="width: 6%;" />   <!-- Avatar -->
+          <col style="width: 11%;" />  <!-- Username -->
+          <col style="width: 13%;" />  <!-- Họ tên -->
+          <col style="width: 17%;" />  <!-- Email -->
+          <col style="width: 12%;" />  <!-- Tổng chi tiêu -->
+          <col style="width: 8%;" />   <!-- Tổng đơn -->
+          <col style="width: 10%;" />  <!-- Trạng thái -->
+          <col style="width: 12%;" />  <!-- Số ngày đã khóa -->
+          <col style="width: 7%;" />   <!-- Thao tác -->
+        </colgroup>
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Avatar</th>
+            <th>Username</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Tổng chi tiêu</th>
+            <th>Tổng đơn</th>
+            <th>Trạng thái</th>
+            <th>Số ngày đã khóa</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let kh of danhSachHienThi; let i = index">
+            <td class="text-center">{{ i + 1 }}</td>
+
+            <td class="text-center">
+              <img
+                *ngIf="kh.anhDaiDien; else defaultAvatar"
+                class="customer-avatar"
+                [src]="kh.anhDaiDien"
+                [alt]="kh.tenTaiKhoanNguoiDung"
+              />
+              <ng-template #defaultAvatar>
+                <div class="customer-avatar avatar-fallback">
+                  {{ layChuCaiDaiDien(kh) }}
+                </div>
+              </ng-template>
+            </td>
+
+            <td class="text-center">{{ kh.tenTaiKhoanNguoiDung }}</td>
+            <td class="text-center">{{ kh.hoTen }}</td>
+            <td class="text-center">{{ kh.email }}</td>
+            <td class="text-center">{{ dinhDangTien(kh.tongChiTieu) }}</td>
+            <td class="text-center">{{ kh.tongDon }}</td>
+
+            <td class="text-center">
+              <span
+                class="status-text"
+                [class.status-active]="!kh.trangThaiKhoa"
+                [class.status-locked]="kh.trangThaiKhoa"
+              >
+                {{ kh.trangThaiKhoa ? 'Đã khóa' : 'Hoạt động' }}
+              </span>
+            </td>
+
+            <td class="text-center">
+              <span [class.locked-days]="kh.soNgayDaKhoa > 0">
+                {{ kh.soNgayDaKhoa }}
+              </span>
+            </td>
+
+            <td class="text-center">
+              <button
+                type="button"
+                class="view-btn"
+                (click)="xemKhachHang(kh)"
+              >
+                [Xem]
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="danhSachDaLoc.length === 0">
+            <td colspan="10" class="empty-row">
+              <i class="bi bi-people"></i>
+              <strong>Không tìm thấy khách hàng</strong>
+              <span>Thử thay đổi từ khóa hoặc điều kiện lọc.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Thẻ khoảng đệm đáy để cuộn thấy trọn vẹn dòng 25 -->
+      <div class="table-bottom-spacer"></div>
+    </div>
+  </section>
+</div>

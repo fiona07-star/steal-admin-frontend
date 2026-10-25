@@ -1,0 +1,166 @@
+<div class="policy-page-container">
+  
+  <!-- TIÊU ĐỀ MÀN HÌNH & NÚT THÊM -->
+  <div class="top-header-bar">
+    <h2 class="page-title">Quản lý chính sách và điều khoản</h2>
+    <button type="button" class="btn-add-policy" (click)="moModalThemMoi()">
+      <i class="bi bi-plus-lg"></i> Thêm chính sách
+    </button>
+  </div>
+
+  <!-- BẢNG TỔNG 2 CỘT -->
+  <div class="policy-main-card">
+    
+    <!-- BANNER HEADER BẢNG -->
+    <div class="card-header-banner">
+      <div class="col-left-header">DANH SÁCH CHÍNH SÁCH</div>
+      <div class="col-right-header">
+        CHI TIẾT: <span>{{ selectedPolicy?.tenChinhSach }}</span>
+      </div>
+    </div>
+
+    <!-- CỘT NỘI DUNG -->
+    <div class="card-body-content">
+      
+      <!-- CỘT TRÁI: DANH SÁCH (LÀM NỔI BẬT ITEM ĐƯỢC CHỌN) -->
+      <div class="policy-list-sidebar">
+        @for (item of danhSachChinhSach; track item.id) {
+          <div 
+            class="policy-item" 
+            [class.active-policy]="item.id === selectedPolicy?.id"
+            (click)="chonChinhSach(item)">
+            <div class="policy-icon-box">
+              <i class="bi" [ngClass]="item.iconClass"></i>
+            </div>
+            <div class="policy-info-box">
+              <span class="policy-item-title">{{ item.tenChinhSach }}</span>
+              <span class="policy-item-date">Mới cập nhật: {{ item.ngayCapNhat }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- ĐƯỜNG PHÂN CÁCH DỌC -->
+      <div class="vertical-divider"></div>
+
+      <!-- CỘT PHẢI: CHI TIẾT CHÍNH SÁCH -->
+      @if (selectedPolicy) {
+        <div class="policy-detail-panel">
+          
+          <div class="detail-info-grid">
+            <div class="info-row">
+              <strong class="info-label">Tên chính sách:</strong>
+              <span class="info-value">{{ selectedPolicy.tenChinhSach }}</span>
+            </div>
+
+            <div class="info-row">
+              <strong class="info-label">URL Slug:</strong>
+              <span class="info-value slug-text">{{ selectedPolicy.slug }}</span>
+            </div>
+
+            <div class="info-row">
+              <strong class="info-label">Mới cập nhật:</strong>
+              <span class="info-value">{{ selectedPolicy.ngayCapNhat }}</span>
+            </div>
+
+            <!-- CHỌN TRẠNG THÁI (CHỈ CHỌN 1 TRONG 2) -->
+            <div class="info-row radio-status-row">
+              <strong class="info-label">Trạng thái:</strong>
+              
+              <label class="custom-radio-status" [class.is-selected]="selectedPolicy.trangThai === true">
+                <input 
+                  type="radio" 
+                  name="policyStatus" 
+                  [value]="true" 
+                  [(ngModel)]="selectedPolicy.trangThai" />
+                <span class="radio-circle green-circle"></span>
+                <span class="status-text green-text">Đang áp dụng</span>
+              </label>
+
+              <label class="custom-radio-status" [class.is-selected]="selectedPolicy.trangThai === false">
+                <input 
+                  type="radio" 
+                  name="policyStatus" 
+                  [value]="false" 
+                  [(ngModel)]="selectedPolicy.trangThai" />
+                <span class="radio-circle red-circle"></span>
+                <span class="status-text red-text">Tạm ẩn</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="horizontal-divider"></div>
+
+          <!-- NỘI DUNG EDITOR -->
+          <div class="content-editor-section">
+            <label class="editor-label">NỘI DUNG CHÍNH SÁCH:</label>
+            <textarea class="policy-content-textarea" [(ngModel)]="selectedPolicy.noiDung" rows="8" placeholder="Nhập nội dung chính sách..."></textarea>
+          </div>
+
+          <div class="last-updated-text">
+            Cập nhật lần cuối: {{ selectedPolicy.ngayCapNhat }} 14:00 bởi {{ selectedPolicy.nguoiCapNhat || 'ADMIN001' }}
+          </div>
+
+        </div>
+      }
+
+    </div>
+
+  </div>
+
+  <!-- NÚT LƯU THAY ĐỔI -->
+  <div class="bottom-action-bar">
+    <button type="button" class="btn-save-changes" (click)="luuThayDoi()">
+      <i class="bi bi-folder-fill"></i> Lưu thay đổi
+    </button>
+  </div>
+
+</div>
+
+<!-- POPUP MODAL THÊM CHÍNH SÁCH MỚI -->
+@if (showAddModal) {
+  <div class="modal-overlay" (click)="dongModalThemMoi()">
+    <div class="modal-container modal-add-policy-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="bi bi-file-earmark-text-fill header-icon-gray"></i>
+          <h3 class="modal-title">THÊM CHÍNH SÁCH MỚI</h3>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="dongModalThemMoi()"><i class="bi bi-x"></i></button>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label">Tên chính sách<span class="required-star">*</span>:</label>
+          <input type="text" class="modal-input input-wide" [(ngModel)]="newPolicyForm.tenChinhSach" placeholder="Chính sách Bảo mật Thanh toán" />
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Trạng thái:</label>
+          <div class="radio-group-row">
+            <label class="radio-option">
+              <input type="radio" name="trangThaiAdd" [value]="true" [(ngModel)]="newPolicyForm.trangThai" /> Đang áp dụng
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="trangThaiAdd" [value]="false" [(ngModel)]="newPolicyForm.trangThai" /> Tạm ẩn
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Nội dung thông báo<span class="required-star">*</span>:</label>
+          <textarea class="modal-textarea" [(ngModel)]="newPolicyForm.noiDung" rows="3" placeholder="Nhập toàn bộ nội dung điều khoản tại đây..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-footer center-footer">
+        <button type="button" class="btn-modal-cancel" (click)="dongModalThemMoi()">Hủy</button>
+        <button type="button" class="btn-create-policy" (click)="xacNhanTaoMoi()">Tạo mới</button>
+      </div>
+    </div>
+  </div>
+}
