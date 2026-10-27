@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { QuanTri } from '../../../services/quan-tri';
+import * as XLSX from 'xlsx';
 
 export interface KhachHang {
   maTaiKhoanNguoiDung: string;
@@ -47,7 +48,6 @@ export class QuanLyNguoiDungComponent implements OnInit {
     this.quanTriService.layDanhSachKhachHang().subscribe({
       next: (data) => {
         if (data && data.length > 0) {
-          // SỬA LỖI: Cập nhật đúng biến danhSachKhachHang
           this.danhSachKhachHang = data;
         }
       },
@@ -59,9 +59,14 @@ export class QuanLyNguoiDungComponent implements OnInit {
 
   // Hàm tạo dữ liệu mẫu 25 khách hàng
   private taoDuLieuMau(): KhachHang[] {
-    const tenMaus = ['Trần Thị Ly', 'Nguyễn Minh Anh', 'Lê Hoàng Nam', 'Phạm Đức Huy', 'Vũ Bích Phương', 'Hoàng Anh Tuấn'];
-    const userMaus = ['lycute14', 'minhanh_99', 'namgamer', 'huypro2026', 'phuong_vu', 'tuan_stealth'];
-
+    const tenMaus = [
+      'Trần Thị Ly', 'Nguyễn Minh Anh', 'Lê Hoàng Nam',
+      'Phạm Đức Huy', 'Vũ Bích Phương', 'Hoàng Anh Tuấn'
+    ];
+    const userMaus = [
+      'lycute14', 'minhanh99', 'namgamer',
+      'huypro2026', 'phuong_vu', 'tuan_stealth'
+    ];
     return Array.from({ length: 25 }, (_, index) => {
       const isLocked = index % 4 === 1;
       return {
@@ -85,20 +90,15 @@ export class QuanLyNguoiDungComponent implements OnInit {
   get danhSachDaLoc(): KhachHang[] {
     return this.danhSachKhachHang.filter(kh => {
       const khopTuKhoa = this.khopTuKhoa(kh);
-
       const khopTrangThai =
         !this.trangThaiTam ||
         (this.trangThaiTam === 'hoat-dong' && !kh.trangThaiKhoa) ||
         (this.trangThaiTam === 'da-khoa' && kh.trangThaiKhoa);
-
       const khopChiTieu =
         !this.chiTieuTam ||
         (this.chiTieuTam === 'duoi-1m' && kh.tongChiTieu < 1000000) ||
-        (this.chiTieuTam === '1m-5m' &&
-          kh.tongChiTieu >= 1000000 &&
-          kh.tongChiTieu <= 5000000) ||
+        (this.chiTieuTam === '1m-5m' && kh.tongChiTieu >= 1000000 && kh.tongChiTieu <= 5000000) ||
         (this.chiTieuTam === 'tren-5m' && kh.tongChiTieu > 5000000);
-
       return khopTuKhoa && khopTrangThai && khopChiTieu;
     });
   }
@@ -131,6 +131,47 @@ export class QuanLyNguoiDungComponent implements OnInit {
   lamMoi(): void {
     this.datLaiBoLoc();
     this.taiDanhSachKhachHang();
+  }
+
+  // HÀM XUẤT DANH SÁCH NGƯỜI DÙNG RA FILE EXCEL
+  xuatExcel(): void {
+    const dsXuat = this.danhSachHienThi;
+    if (!dsXuat || dsXuat.length === 0) {
+      alert('Không có dữ liệu người dùng để xuất!');
+      return;
+    }
+
+    const dataExcel = dsXuat.map((kh, index) => ({
+      'STT': index + 1,
+      'Mã tài khoản': kh.maTaiKhoanNguoiDung,
+      'Tên tài khoản': kh.tenTaiKhoanNguoiDung,
+      'Họ tên': kh.hoTen,
+      'Email': kh.email,
+      'Tổng chi tiêu (VNĐ)': kh.tongChiTieu,
+      'Tổng đơn': kh.tongDon,
+      'Trạng thái': kh.trangThaiKhoa ? 'Đã khóa' : 'Hoạt động',
+      'Số ngày đã khóa': kh.soNgayDaKhoa
+    }));
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataExcel);
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 15 },
+      { wch: 18 },
+      { wch: 22 },
+      { wch: 25 },
+      { wch: 18 },
+      { wch: 10 },
+      { wch: 14 },
+      { wch: 15 }
+    ];
+
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách khách hàng');
+    
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `Danh_Sach_Khach_Hang_${dateStr}.xlsx`);
   }
 
   layChuCaiDaiDien(kh: KhachHang): string {

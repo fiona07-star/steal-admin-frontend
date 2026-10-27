@@ -6,9 +6,6 @@
   color: #e7e9f5;
   font-family: 'Commissioner', 'Comme', Arial, sans-serif;
   font-size: 13px;
-}
-
-* {
   box-sizing: border-box;
 }
 
@@ -21,7 +18,7 @@
   overflow: hidden;
 }
 
-/* ===== TIÊU ĐỀ TRANG ===== */
+/* ===== TIÊU ĐỀ TRANG & HÀNH ĐỘNG ===== */
 .page-heading {
   display: flex;
   align-items: center;
@@ -47,7 +44,6 @@
   font-weight: 400;
 }
 
-/* Chữ hiển thị số lượng khách hàng sau khi lọc */
 .filter-count {
   margin-left: 8px;
   font-size: 14px;
@@ -58,6 +54,13 @@
 .filter-count strong {
   font-weight: 700;
   color: #ffffff;
+}
+
+/* KHỐI CHỨA NÚT LÀM MỚI VÀ XUẤT EXCEL */
+.heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .refresh-btn {
@@ -80,6 +83,29 @@
 
 .refresh-btn:hover {
   background: #4e5675;
+}
+
+/* NÚT XUẤT EXCEL (ĐỨNG CẠNH NÚT LÀM MỚI) */
+.export-excel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  background: #107c41; /* Màu xanh lá chuẩn Excel */
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.export-excel-btn:hover {
+  background: #0e6b37;
 }
 
 /* ===== BỘ LỌC (3 Ô: TÌM KIẾM - TRẠNG THÁI - TỔNG CHI TIÊU) ===== */
@@ -174,13 +200,12 @@
 .table-scroll {
   width: 100%;
   height: 100%;
-  max-height: calc(100vh - 195px); /* Tính toán chiều cao tối ưu để cuộn trọn vẹn dòng cuối */
+  max-height: calc(100vh - 195px);
   overflow-y: auto !important;
   overflow-x: auto;
-  padding-bottom: 20px; /* Đệm khoảng trống phía dưới */
+  padding-bottom: 20px;
 }
 
-/* Custom thanh cuộn dọc (Scrollbar) mượt mà */
 .table-scroll::-webkit-scrollbar {
   width: 7px;
   height: 7px;
